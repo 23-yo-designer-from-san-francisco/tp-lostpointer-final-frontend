@@ -2,7 +2,9 @@ import React from 'react';
 import './Timer.css';
 
 const Timer: React.FC = () => {
-  return(<></>);
+  return(
+    <div>Таймер</div>
+  );
 };
 
 export { Timer };
