@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Card } from '../Card/Card';
 import { CardModel } from '../../models/card';
 import { AppContext } from '../../AppContext';
@@ -14,16 +14,18 @@ export interface CardListProps {
 const CardList: React.FC<CardListProps> = ({ id, parent,  cards = [] }) => {
   const appContext = useContext(AppContext);
   const [_cards, addCard] = useState<CardModel[]>(cards);
+  const listRef = useRef<any>();
 
   const addCardHandler = () => {
     addCard(_cards.concat(new CardModel({})));
+    listRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'end' });
   };
 
   useEffect(() => appContext.updatePanel?.(parent, { cards: _cards }), [_cards]);
 
   return(
     <div id={id} className={styles.cardList}>
-      <ul>
+      <ul ref={listRef}>
         {_cards.map((card, i) =>
           <li key={i}>
             <Card
