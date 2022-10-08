@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Home } from './Home';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -22,24 +22,27 @@ export const App: React.FC = () => {
   const [state, setState] = useState<any>({
     [PANEL_HOME]: {},
     [PANEL_DAY]: {
-      cards: [
-        new CardModel({ executed: false, imageUrl: 'https://meddynasty.ru/assets/images/14.11.16/клизма2.jpg' }),
-        new CardModel({ executed: true, imageUrl: 'https://meddynasty.ru/assets/images/14.11.16/клизма2.jpg' }),
-        new CardModel({})
-      ],
+      cards: [],
     },
     [PANEL_LESSON]: {
-      cards: [
-        new CardModel({ executed: false, imageUrl: 'https://meddynasty.ru/assets/images/14.11.16/клизма2.jpg' }),
-        new CardModel({ executed: true, imageUrl: 'https://meddynasty.ru/assets/images/14.11.16/клизма2.jpg' }),
-        new CardModel({})
-      ],
+      cards: [],
     },
     [PANEL_BEFORE_AFTER]: {},
     [PANEL_TIMER]: {
       remainingTime: 0,
     },
   });
+
+  useEffect(() => {
+    (async () => {
+      const cards = await CardModel.getCards();
+      setState( { ...state,
+        [PANEL_DAY]: cards,
+        [PANEL_LESSON]: cards }
+      );
+    })();
+  }, []);
+
 
   const updatePanel = ((panel: string, data: any) => {
     setState({ ...state, [panel]: data });

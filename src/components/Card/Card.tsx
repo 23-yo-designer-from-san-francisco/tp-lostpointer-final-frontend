@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 import styles from './Card.module.css';
 
 export interface CardProps {
-    executed?: boolean;
-    imageUrl?: string;
+  done?: boolean;
+    imgUrl?: string;
 }
 
 
-const Card: React.FC<CardProps> = ({ executed, imageUrl }) => {
-  const [done, setDone] = useState<boolean>(Boolean(executed));
+const Card: React.FC<CardProps> = ({ done, imgUrl }) => {
+  const [_done, setDone] = useState<boolean>(Boolean(done));
   const [loadedImg, setLoadedImg] = useState<string>('');
 
 
   const clickHandler = () => {
-    setDone(!done);
+    setDone(!_done);
   };
   const uploadFileHandler = (event) => {
     event.preventDefault();
@@ -49,7 +49,7 @@ const Card: React.FC<CardProps> = ({ executed, imageUrl }) => {
 
   return(
     <div className={styles.card} onClick={clickHandler}>
-      {!imageUrl && !loadedImg && <form className="cardForm">
+      {!imgUrl && !loadedImg && <form className="cardForm">
         <input onChange={uploadFileHandler}
           type='file'
           name='file'
@@ -59,17 +59,17 @@ const Card: React.FC<CardProps> = ({ executed, imageUrl }) => {
         />
         <label htmlFor='file' className={styles.cardInner}>+</label>
       </form>}
-      {!imageUrl && loadedImg &&
+      {!imgUrl && loadedImg &&
           <div className={styles.cardInner}>
             <img src={loadedImg} />
           </div>}
-      {imageUrl && !done &&
+      {imgUrl && !_done &&
           <div className={styles.cardInner}>
-            <img src={imageUrl} />
+            <img src={imgUrl} />
           </div>}
-      {imageUrl && done &&
+      {imgUrl && _done &&
           <div className={`${styles.cardInner} ${styles.transparent}`}>
-            <img src={imageUrl}/>
+            <img src={imgUrl}/>
           </div>
       }
     </div>);

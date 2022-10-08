@@ -25,8 +25,8 @@ const CardList: React.FC<CardListProps> = ({ id, cards = [] }) => {
         {_cards.map((card, i) =>
           <li key={i}>
             <Card
-              executed={card.getProps().executed}
-              imageUrl={card.getProps().imageUrl}
+              done={card.getProps().done}
+              imgUrl={card.getProps().imgUrl}
             />
           </li>
         )}
