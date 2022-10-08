@@ -7,9 +7,10 @@ import { Lesson } from './Lesson/Lesson';
 import { BeforeAfter } from './BeforeAfter/BeforeAfter';
 import { Timer } from './Timer/Timer';
 import { Tabbar } from './Tabbar/Tabbar';
+import { PANEL_BEFORE_AFTER, PANEL_DAY, PANEL_HOME, PANEL_LESSON, PANEL_TIMER } from './pages';
+import { CardModel } from './models/card';
 
 import styles from './App.module.css';
-import { PANEL_BEFORE_AFTER, PANEL_DAY, PANEL_HOME, PANEL_LESSON, PANEL_TIMER } from './pages';
 
 export interface AppContextProps {
   updatePanel: (panel: string, data: any) => void;
@@ -20,8 +21,20 @@ export const AppContext = React.createContext<AppContextProps>({});
 export const App: React.FC = () => {
   const [state, setState] = useState<any>({
     [PANEL_HOME]: {},
-    [PANEL_DAY]: {},
-    [PANEL_LESSON]: {},
+    [PANEL_DAY]: {
+      cards: [
+        new CardModel({ executed: false, imageUrl: 'https://meddynasty.ru/assets/images/14.11.16/клизма2.jpg' }),
+        new CardModel({ executed: true, imageUrl: 'https://meddynasty.ru/assets/images/14.11.16/клизма2.jpg' }),
+        new CardModel({})
+      ],
+    },
+    [PANEL_LESSON]: {
+      cards: [
+        new CardModel({ executed: false, imageUrl: 'https://meddynasty.ru/assets/images/14.11.16/клизма2.jpg' }),
+        new CardModel({ executed: true, imageUrl: 'https://meddynasty.ru/assets/images/14.11.16/клизма2.jpg' }),
+        new CardModel({})
+      ],
+    },
     [PANEL_BEFORE_AFTER]: {},
     [PANEL_TIMER]: {
       remainingTime: 0,
@@ -29,7 +42,7 @@ export const App: React.FC = () => {
   });
 
   const updatePanel = ((panel: string, data: any) => {
-    setState({ [panel]: data });
+    setState({ ...state, [panel]: data });
   });
 
   const appContext = {
@@ -44,10 +57,10 @@ export const App: React.FC = () => {
             <Home id={PANEL_HOME} />
           } />
           <Route path="day" element={
-            <Day id={PANEL_DAY} />
+            <Day cards={state[PANEL_DAY].cards} id={PANEL_DAY} />
           }/>
           <Route path="lesson" element={
-            <Lesson id={PANEL_LESSON} />
+            <Lesson cards={state[PANEL_LESSON].cards} id={PANEL_LESSON} />
           }/>
           <Route path="before-after" element={
             <BeforeAfter id={PANEL_BEFORE_AFTER} />
