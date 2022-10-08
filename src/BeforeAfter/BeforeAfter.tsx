@@ -1,13 +1,13 @@
 import React from 'react';
 import './BeforeAfter.css';
 
-const BeforeAfter: React.FC = () => {
+export interface BeforeAfterProps {
+    id: string;
+}
+
+const BeforeAfter: React.FC<BeforeAfterProps> = ({ id }) => {
   return(
-    <>
-      <div>
-              Сначала-потом
-      </div>
-    </>
+    <div id={id}>Сначала-потом</div>
   );
 };
 
