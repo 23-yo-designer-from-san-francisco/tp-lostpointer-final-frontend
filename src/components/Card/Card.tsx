@@ -6,18 +6,66 @@ export interface CardProps {
     imageUrl?: string;
 }
 
+
 const Card: React.FC<CardProps> = ({ executed, imageUrl }) => {
   const [done, setDone] = useState<boolean>(Boolean(executed));
+  const [loadedImg, setLoadedImg] = useState<string>('');
+
+
   const clickHandler = () => {
     setDone(!done);
+  };
+  const uploadFileHandler = (event) => {
+    event.preventDefault();
+
+    const file = event.target.files[0];
+    // const readFile = null;
+
+    const ext = file.name
+      .substring(file.name.lastIndexOf('.') + 1)
+      .toLowerCase();
+
+    if (
+      ext === 'gif' ||
+        ext === 'png' ||
+        ext === 'jpeg' ||
+        ext === 'jpg' ||
+        ext === 'webp'
+    ) {
+      const reader = new FileReader();
+      reader.addEventListener('load', (e) => {
+        e.preventDefault();
+
+        // const avatar = document.querySelector('.profile-avatar__img');  // TODO
+        if (typeof e.target.result === 'string') {
+          console.log(e.target.result);
+          setLoadedImg(e.target.result);
+          // readFile = e.target.result;
+        }
+      });
+      reader.readAsDataURL(file);
+    }
   };
 
   return(
     <div className={styles.card} onClick={clickHandler}>
-      {!imageUrl && <div className={styles.cardInner}>+</div>}
+      {!imageUrl && !loadedImg && <form className="cardForm">
+        <input onChange={uploadFileHandler}
+          type='file'
+          name='file'
+          id='file'
+          accept='image/png, image/jpg, image/webp'
+          className={styles.cardFormFile}
+        />
+        <label htmlFor='file' className={styles.cardInner}>+</label>
+      </form>}
+      {!imageUrl && loadedImg &&
+          <div className={styles.cardInner}>
+            <img src={loadedImg} />
+          </div>}
       {imageUrl && !done &&
           <div className={styles.cardInner}>
-            <img src={imageUrl}/>
+            <img src={imageUrl} />
           </div>}
       {imageUrl && done &&
           <div className={`${styles.cardInner} ${styles.transparent}`}>
