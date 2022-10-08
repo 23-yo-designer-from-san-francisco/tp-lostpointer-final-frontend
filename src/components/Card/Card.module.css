@@ -13,10 +13,18 @@
 }
 
 .cardInner img {
-    vertical-align: sub;
     width: 290px;
     border-radius: 10% 10% 10% 10%;
 }
+
+.cardFormFile {
+     width: 0.1px;
+     height: 0.1px;
+     opacity: 0%;
+     overflow: hidden;
+     position: absolute;
+     z-index: -1;
+ }
 
 .transparent {
     opacity: 0.5;
