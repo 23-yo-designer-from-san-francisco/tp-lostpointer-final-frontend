@@ -1,14 +1,25 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Info } from './Info';
 import { Home } from './Home';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Day } from './Day/Day';
+import { Lesson } from './Lesson/Lesson';
+import { BeforeAfter } from './BeforeAfter/BeforeAfter';
+import { Timer } from './Timer/Timer';
+import { Tabbar } from './Tabbar/Tabbar';
+import styles from './App.module.css';
 
 export const App: React.FC = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="about" element={<Info />}/>
-    </Routes>
+    <div className={styles.app}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="day" element={<Day />}/>
+        <Route path="lesson" element={<Lesson />}/>
+        <Route path="before-after" element={<BeforeAfter />}/>
+        <Route path="timer" element={<Timer />}/>
+      </Routes>
+      <Tabbar/>
+    </div>
   );
 };
