@@ -17,6 +17,7 @@ export class CardModel extends Model<ICard>{
     const response = await request.get('/cards');
     let cards: Array<CardModel> = [];
     if (response && response.status === 200) {
+      // @ts-ignore
       cards = response ? CardModel.serializeList(response) : [];
     }
     return cards;
