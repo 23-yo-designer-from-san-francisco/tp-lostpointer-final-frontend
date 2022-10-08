@@ -9,12 +9,11 @@
 }
 
 .cardInner {
-    display: flex;
     font-size: 150px;
 }
 
 .cardInner img {
-    object-fit: fill;
+    vertical-align: sub;
     width: 290px;
     border-radius: 10% 10% 10% 10%;
 }
