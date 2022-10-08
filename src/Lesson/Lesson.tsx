@@ -12,7 +12,7 @@ export interface LessonProps {
 const Lesson: React.FC<LessonProps> = ({ id, cards }) => {
   return(
     <div id={id}>
-      <CardList id={LESSON_CARD_LIST}
+      <CardList parent={id} id={LESSON_CARD_LIST}
         cards={cards}
       />
     </div>

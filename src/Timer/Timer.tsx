@@ -3,7 +3,7 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 
 import styles from './Timer.module.css';
 import { Button } from 'react-bootstrap';
-import { AppContext } from '../App';
+import { AppContext } from '../AppContext';
 
 export interface TimerProps {
   id: string;
@@ -16,8 +16,7 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
   const [duration, setDuration] = useState<number>(remainingTime);
 
   const updateDurationHandler = () => {
-    // @ts-ignore
-    appContext.updatePanel(id, { remainingTime: userDefinedDuration });
+    appContext.updatePanel?.(id, { remainingTime: userDefinedDuration });
     setDuration(userDefinedDuration);
   };
 

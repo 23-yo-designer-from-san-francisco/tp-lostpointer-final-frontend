@@ -1,8 +1,7 @@
 export abstract class Model<TModel> {
   public props: TModel;
 
-  // @ts-ignore
-  protected constructor(props: TModel = null) {
+  constructor(props: any = null) {
     this.props = props;
   }
 
