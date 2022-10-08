@@ -16,6 +16,7 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
   const [duration, setDuration] = useState<number>(remainingTime);
 
   const updateDurationHandler = () => {
+    // @ts-ignore
     appContext.updatePanel(id, { remainingTime: userDefinedDuration });
     setDuration(userDefinedDuration);
   };

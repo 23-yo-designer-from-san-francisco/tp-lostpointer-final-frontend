@@ -16,6 +16,7 @@ const CardList: React.FC<CardListProps> = ({ id, cards = [] }) => {
 
   const addCardHandler = () => {
     addCard(_cards.concat(new CardModel({})));
+    // @ts-ignore
     appContext.updatePanel(id === LESSON_CARD_LIST ? PANEL_LESSON : PANEL_DAY, { cards: _cards });
   };
 

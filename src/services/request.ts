@@ -25,6 +25,7 @@ export class Request {
       RequestMethods.PATCH,
       requestBody,
       contentType,
+      // @ts-ignore
       customHeaders
     );
   }
@@ -78,6 +79,7 @@ export class Request {
   _fetchRequest(
     url: string,
     requestMethod: string,
+    // @ts-ignore
     requestBody: BodyInit = null,
     contentType: string = ContentType.JSON,
     customHeaders = null
