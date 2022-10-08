@@ -49,6 +49,5 @@ module.exports = {
         'no-trailing-spaces': [
             'error'
         ],
-        "@typescript-eslint/ban-ts-comment": true,
     }
 };
