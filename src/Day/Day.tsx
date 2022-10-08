@@ -12,7 +12,7 @@ export interface DayProps {
 const Day: React.FC<DayProps> = ({ id, cards= [] }) => {
   return(
     <div id={id}>
-      <CardList id={DAY_CARD_LIST} cards={cards}/>
+      <CardList parent={id} id={DAY_CARD_LIST} cards={cards}/>
     </div>
   );
 };

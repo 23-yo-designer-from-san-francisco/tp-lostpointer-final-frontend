@@ -14,11 +14,10 @@ export class CardModel extends Model<ICard>{
   }
 
   static async getCards() {
-    const response = await request.get('/cards');
+    const response = await request.get('cards');
     let cards: Array<CardModel> = [];
-    if (response && response.status === 200) {
-      // @ts-ignore
-      cards = response ? CardModel.serializeList(response) : [];
+    if (response?.status === 200) {
+      cards = response ? response.cards : [];
     }
     return cards;
   }

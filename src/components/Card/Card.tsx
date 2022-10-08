@@ -26,27 +26,19 @@ const Card: React.FC<CardProps> = ({ done, imgUrl }) => {
     const formdata = new FormData();
     formdata.append('image', file);
     formdata.append('json', '{"name":"card","startTime":"05:00","endTime":"06:00"}');
+    // В result будет полная информация о карточке, а она нам нужна? Мб просто успешно изменение или нет
     const result = await request.post('cards', formdata, ContentType.FORM);
 
     const ext = file.name
       .substring(file.name.lastIndexOf('.') + 1)
       .toLowerCase();
 
-    if (
-      ext === 'gif' ||
-        ext === 'png' ||
-        ext === 'jpeg' ||
-        ext === 'jpg' ||
-        ext === 'webp'
-    ) {
+    if (['gif', 'png', 'jpeg', 'jpg', 'webp'].includes(ext)) {
       const reader = new FileReader();
       reader.addEventListener('load', (e) => {
         e.preventDefault();
-        // @ts-ignore
-        if (typeof e.target.result === 'string') {
-          // @ts-ignore
+        if (typeof e?.target?.result === 'string') {
           setLoadedImg(e.target.result);
-          // readFile = e.target.result;
         }
       });
       reader.readAsDataURL(file);

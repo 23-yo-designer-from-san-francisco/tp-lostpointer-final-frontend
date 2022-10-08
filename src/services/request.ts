@@ -25,7 +25,6 @@ export class Request {
       RequestMethods.PATCH,
       requestBody,
       contentType,
-      // @ts-ignore
       customHeaders
     );
   }
@@ -79,21 +78,13 @@ export class Request {
   _fetchRequest(
     url: string,
     requestMethod: string,
-    // @ts-ignore
-    requestBody: BodyInit = null,
+    requestBody: any = null,
     contentType: string = ContentType.JSON,
-    customHeaders = null
+    customHeaders: any = null
   ): Promise<any> {
     const myHeaders = new Headers();
-    if (
-      !!requestBody &&
-            // потому что FormData сам проставляет нужный content type
-            contentType !== ContentType.FORM &&
-            (RequestMethods.POST === requestMethod ||
-                RequestMethods.PUT === requestMethod ||
-                RequestMethods.DELETE === requestMethod ||
-                RequestMethods.PATCH)
-    ) {
+    const { POST, PUT, DELETE, PATCH } = RequestMethods;
+    if (requestBody && contentType !== ContentType.FORM && [POST, PUT, DELETE, PATCH].includes(requestMethod)) {
       myHeaders.append('Content-Type', contentType);
     }
     if (customHeaders) {
