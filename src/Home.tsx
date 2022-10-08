@@ -1,13 +1,10 @@
 import React from 'react';
-import { Info } from './Info';
-import { MyComponent } from './MyComponent/MyComponent';
+import { Card } from './Slot/Card';
 
 export const Home: React.FC = () => {
   return (
     <>
-      <div>test</div>
-      <Info text="TEST"/>
-      <MyComponent text="KEK ))))"/>
+      <Card imageUrl="https://meddynasty.ru/assets/images/14.11.16/клизма2.jpg"/>
     </>
   );
 };
