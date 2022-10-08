@@ -17,7 +17,7 @@ export class CardModel extends Model<ICard>{
     const response = await request.get('cards');
     let cards: Array<CardModel> = [];
     if (response?.status === 200) {
-      cards = response ? response.cards : [];
+      cards = response || [];
     }
     return cards;
   }
