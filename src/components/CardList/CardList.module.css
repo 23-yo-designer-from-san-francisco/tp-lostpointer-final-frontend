@@ -1,9 +1,3 @@
-.cardList {
-    display: flex;
-    align-items: center;
-    overflow-x: scroll;
-}
-
 .cardList > ul > li {
     margin: 5px;
     display: inline-block;
