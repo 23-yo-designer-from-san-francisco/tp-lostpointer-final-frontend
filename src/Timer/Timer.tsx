@@ -33,7 +33,7 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
         </CountdownCircleTimer>
       </div>
       <form>
-        <input type="number" onChange={(e) => setUserDefinedDuration(parseInt(e.currentTarget.value))}/>
+        <input type="number" min={0} onChange={(e) => setUserDefinedDuration(parseInt(e.currentTarget.value))}/>
         <Button onClick={updateDurationHandler}>Установить</Button>
       </form>
     </div>

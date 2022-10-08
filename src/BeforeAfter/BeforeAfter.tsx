@@ -7,7 +7,7 @@ export interface BeforeAfterProps {
 
 const BeforeAfter: React.FC<BeforeAfterProps> = ({ id }) => {
   return(
-    <div id={id}>Сначала-потом</div>
+    <div id={id}>Work in progress</div>
   );
 };
 
