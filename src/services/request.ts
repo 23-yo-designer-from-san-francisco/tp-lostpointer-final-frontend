@@ -1,6 +1,6 @@
 import { ContentType, RequestMethods } from './requestUtils';
 
-const defaultBackendDomain = '/api/v1';
+const defaultBackendDomain = 'https://lostpointer.tech/api/';
 
 export interface IResponseBody {
     status: number;
@@ -108,7 +108,8 @@ export class Request {
       credentials: 'include',
       headers: myHeaders,
       body: requestBody,
-    }).then((response) => response.json());
+    })
+      .then((response) => response.json());
   }
 
   _createURL(domain: string, path: string): string {
