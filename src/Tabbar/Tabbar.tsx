@@ -18,7 +18,7 @@ const Tabbar: React.FC = () => {
       className={styles.tabbar}
     >
       <Tab eventKey="day" title="День" />
-      <Tab eventKey="lesson" title="Урок"/>
+      <Tab eventKey="lesson" title="Занятие"/>
       <Tab eventKey="before-after" title="Сначала-потом"/>
       <Tab eventKey="timer" title="Таймер"/>
     </Tabs>
