@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styles from './CardList.module.css';
 import { Card } from '../Card/Card';
 import { CardModel } from '../../models/card';
@@ -16,10 +16,10 @@ const CardList: React.FC<CardListProps> = ({ id, parent,  cards = [] }) => {
 
   const addCardHandler = () => {
     addCard(_cards.concat(new CardModel({})));
-    appContext.updatePanel?.(parent, {
-      cards: _cards
-    });
+
   };
+
+  useEffect(() => appContext.updatePanel?.(parent, { cards: _cards }), [_cards]);
 
   return(
     <div id={id} className={styles.cardList}>
