@@ -13,9 +13,10 @@ import { CardModel } from './models/card';
 import styles from './App.module.css';
 
 export interface AppContextProps {
-  updatePanel: (panel: string, data: any) => void;
+  updatePanel?: (panel: string, data: any) => void;
 }
 
+// @ts-ignore
 export const AppContext = React.createContext<AppContextProps>({});
 
 export const App: React.FC = () => {

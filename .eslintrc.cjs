@@ -48,6 +48,7 @@ module.exports = {
         'unused-imports/no-unused-imports-ts': 2,
         'no-trailing-spaces': [
             'error'
-        ]
+        ],
+        "ban-ts-ignore": true,
     }
 };

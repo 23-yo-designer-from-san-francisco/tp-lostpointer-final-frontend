@@ -15,7 +15,7 @@ const Card: React.FC<CardProps> = ({ executed, imageUrl }) => {
   const clickHandler = () => {
     setDone(!done);
   };
-  const uploadFileHandler = (event) => {
+  const uploadFileHandler = (event: any) => {
     event.preventDefault();
 
     const file = event.target.files[0];
@@ -35,10 +35,9 @@ const Card: React.FC<CardProps> = ({ executed, imageUrl }) => {
       const reader = new FileReader();
       reader.addEventListener('load', (e) => {
         e.preventDefault();
-
-        // const avatar = document.querySelector('.profile-avatar__img');  // TODO
+        // @ts-ignore
         if (typeof e.target.result === 'string') {
-          console.log(e.target.result);
+          // @ts-ignore
           setLoadedImg(e.target.result);
           // readFile = e.target.result;
         }
