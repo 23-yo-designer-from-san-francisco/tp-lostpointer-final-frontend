@@ -24,10 +24,9 @@ const Card: React.FC<CardProps> = ({ done, imgUrl }) => {
     // const readFile = null;
 
     const formdata = new FormData();
-    formdata.append('image', file, file.name);
-    formdata.append('json', '{"name":"card","startTime":"05:00","endTime":"06:00"}\n');
-    const result = await request.post('cards', formdata, ContentType.JSON);
-    console.log(result);
+    formdata.append('image', file);
+    formdata.append('json', '{"name":"card","startTime":"05:00","endTime":"06:00"}');
+    const result = await request.post('cards', formdata, ContentType.FORM);
 
     const ext = file.name
       .substring(file.name.lastIndexOf('.') + 1)
