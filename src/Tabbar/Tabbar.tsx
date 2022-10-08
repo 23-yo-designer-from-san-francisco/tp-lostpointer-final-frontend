@@ -13,7 +13,6 @@ const Tabbar: React.FC = () => {
 
   return(
     <Tabs
-      id="controlled-tab-example"
       activeKey={key}
       onSelect={clickHandler}
       className={styles.tabbar}

@@ -2,7 +2,11 @@ import React from 'react';
 import './Day.css';
 
 const Day: React.FC = () => {
-  return(<>День</>);
+  return(
+    <div>
+        День
+    </div>
+  );
 };
 
 export { Day };
