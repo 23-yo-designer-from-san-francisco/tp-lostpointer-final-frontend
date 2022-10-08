@@ -1,6 +1,6 @@
 import { ContentType, RequestMethods } from './requestUtils';
 
-const defaultBackendDomain = '/api/v1';
+const defaultBackendDomain = 'https://lostpointer.tech/api/';
 
 export interface IResponseBody {
     status: number;

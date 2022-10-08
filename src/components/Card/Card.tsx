@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import styles from './Card.module.css';
+import request from '../../services/request';
+import { ContentType } from '../../services/requestUtils';
 
 export interface CardProps {
     executed?: boolean;
@@ -15,11 +17,17 @@ const Card: React.FC<CardProps> = ({ executed, imageUrl }) => {
   const clickHandler = () => {
     setDone(!done);
   };
-  const uploadFileHandler = (event: any) => {
+  const uploadFileHandler = async (event: any) => {
     event.preventDefault();
 
     const file = event.target.files[0];
     // const readFile = null;
+
+    const formdata = new FormData();
+    formdata.append('image', file, file.name);
+    formdata.append('json', '{"name":"card","startTime":"05:00","endTime":"06:00"}\n');
+    const result = await request.post('cards', formdata, ContentType.JSON);
+    console.log(result);
 
     const ext = file.name
       .substring(file.name.lastIndexOf('.') + 1)
