@@ -7,7 +7,7 @@ import './Day.css';
 
 export interface DayProps {
     id: string;
-    cards?: CardModel[];
+    cards: CardModel[];
 }
 
 const Day: React.FC<DayProps> = ({ id, cards= [] }) => {

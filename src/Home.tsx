@@ -7,6 +7,7 @@ export interface HomeProps {
 
 export const Home: React.FC<HomeProps> = ({ id }) => {
   const navigate = useNavigate();
+
   useEffect(() => {
     navigate('day');
   }, []);

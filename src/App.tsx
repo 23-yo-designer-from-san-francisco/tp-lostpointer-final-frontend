@@ -24,8 +24,9 @@ export interface AppState {
   },
   [PANEL_BEFORE_AFTER]: any,
   [PANEL_TIMER]: {
-    remainingTime: number
-  }
+    remainingTime: number,
+  },
+  loaded: boolean,
 }
 
 export const App: React.FC = () => {
@@ -41,15 +42,13 @@ export const App: React.FC = () => {
     [PANEL_TIMER]: {
       remainingTime: 0,
     },
+    loaded: false,
   });
 
   useEffect(() => {
     (async () => {
       const { cards } = await appContext.apiRequest('cards');
-      setState( { ...state,
-        [PANEL_DAY]: { cards },
-        [PANEL_LESSON]: { cards }
-      });
+      setState({ ...state, [PANEL_DAY]: { cards }, [PANEL_LESSON]: { cards }, loaded: true });
     })();
   }, []);
 
@@ -69,6 +68,8 @@ export const App: React.FC = () => {
     apiRequest
   };
 
+  const { loaded } = state;
+
   return (
     <AppContext.Provider value={appContext}>
       <div className={styles.app}>
@@ -76,18 +77,20 @@ export const App: React.FC = () => {
           <Route path="/" element={
             <Home id={PANEL_HOME} />
           } />
-          <Route path="day" element={
-            <Day cards={state[PANEL_DAY].cards} id={PANEL_DAY} />
-          }/>
-          <Route path="lesson" element={
-            <Lesson cards={state[PANEL_LESSON].cards} id={PANEL_LESSON} />
-          }/>
-          <Route path="before-after" element={
-            <BeforeAfter id={PANEL_BEFORE_AFTER} />
-          }/>
-          <Route path="timer" element={
-            <Timer remainingTime={state[PANEL_TIMER].remainingTime} id={PANEL_TIMER}/>
-          }/>
+          {loaded && <>
+            <Route path="day" element={
+              <Day cards={state[PANEL_DAY].cards} id={PANEL_DAY} />
+            }/>
+            <Route path="lesson" element={
+              <Lesson cards={state[PANEL_LESSON].cards} id={PANEL_LESSON} />
+            }/>
+            <Route path="before-after" element={
+              <BeforeAfter id={PANEL_BEFORE_AFTER} />
+            }/>
+            <Route path="timer" element={
+              <Timer remainingTime={state[PANEL_TIMER].remainingTime} id={PANEL_TIMER}/>
+            }/>
+          </>}
         </Routes>
         <Tabbar/>
       </div>
