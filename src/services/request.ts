@@ -14,21 +14,6 @@ export class Request {
     this.backendDomain = domain;
   }
 
-  patch(
-    path: string,
-    requestBody?: BodyInit,
-    contentType?: string,
-    customHeaders?: object
-  ): Promise<any> {
-    return this._fetchRequest(
-      this._createURL(this.backendDomain, path),
-      RequestMethods.PATCH,
-      requestBody,
-      contentType,
-      customHeaders
-    );
-  }
-
   post(
     path: string,
     requestBody?: BodyInit,
@@ -42,36 +27,10 @@ export class Request {
     );
   }
 
-  put(
-    path: string,
-    requestBody?: BodyInit,
-    contentType?: string
-  ): Promise<any> {
-    return this._fetchRequest(
-      this._createURL(this.backendDomain, path),
-      RequestMethods.PUT,
-      requestBody,
-      contentType
-    );
-  }
-
   get(path: string): Promise<any> {
     return this._fetchRequest(
       this._createURL(this.backendDomain, path),
       RequestMethods.GET
-    );
-  }
-
-  delete(
-    path: string,
-    requestBody?: BodyInit,
-    contentType?: string
-  ): Promise<any> {
-    return this._fetchRequest(
-      this._createURL(this.backendDomain, path),
-      RequestMethods.DELETE,
-      requestBody,
-      contentType
     );
   }
 
@@ -100,7 +59,8 @@ export class Request {
       headers: myHeaders,
       body: requestBody,
     })
-      .then((response) => response.json());
+      .then((r) => r.json())
+      .then((r) => r.response);
   }
 
   _createURL(domain: string, path: string): string {

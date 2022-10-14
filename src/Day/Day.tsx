@@ -1,8 +1,9 @@
 import React from 'react';
-import './Day.css';
 import { CardList } from '../components/CardList/CardList';
-import { CardModel } from '../models/card';
 import { DAY_CARD_LIST } from '../pages';
+import { CardModel } from '../Interfaces';
+
+import './Day.css';
 
 export interface DayProps {
     id: string;

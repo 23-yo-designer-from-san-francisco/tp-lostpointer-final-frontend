@@ -1,8 +1,9 @@
 import React from 'react';
-import './Lesson.css';
 import { CardList } from '../components/CardList/CardList';
-import { CardModel } from '../models/card';
 import { LESSON_CARD_LIST } from '../pages';
+import { CardModel } from '../Interfaces';
+
+import './Lesson.css';
 
 export interface LessonProps {
     id: string;

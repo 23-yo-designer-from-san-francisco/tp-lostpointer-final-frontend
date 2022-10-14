@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Card } from '../Card/Card';
-import { CardModel } from '../../models/card';
 import { AppContext } from '../../AppContext';
 
 import styles from './CardList.module.css';
+import { CardModel } from '../../Interfaces';
 
 export interface CardListProps {
     id: string;
@@ -17,20 +17,20 @@ const CardList: React.FC<CardListProps> = ({ id, parent,  cards = [] }) => {
   const listRef = useRef<any>();
 
   const addCardHandler = () => {
-    addCard(_cards.concat(new CardModel({})));
+    addCard(_cards.concat({ done: false, imgUrl: '' }));
     listRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'end' });
   };
 
-  useEffect(() => appContext.updatePanel?.(parent, { cards: _cards }), [_cards]);
+  useEffect(() => appContext.updatePanel(parent, { cards: _cards }), [_cards]);
 
   return(
     <div id={id} className={styles.cardList}>
       <ul ref={listRef}>
-        {_cards.map((card, i) =>
+        {_cards.map(({ done, imgUrl }, i) =>
           <li key={i}>
             <Card
-              done={card.getProps().done}
-              imgUrl={card.getProps().imgUrl}
+              done={done}
+              imgUrl={imgUrl}
             />
           </li>
         )}

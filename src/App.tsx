@@ -7,13 +7,12 @@ import { BeforeAfter } from './BeforeAfter/BeforeAfter';
 import { Timer } from './Timer/Timer';
 import { Tabbar } from './Tabbar/Tabbar';
 import { PANEL_BEFORE_AFTER, PANEL_DAY, PANEL_HOME, PANEL_LESSON, PANEL_TIMER } from './pages';
-import { CardModel } from './models/card';
-import { AppContext } from './AppContext';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { AppContext, AppContextProps } from './AppContext';
+import request from './services/request';
+import { ApiRequestParams, CardModel } from './Interfaces';
 
 import styles from './App.module.css';
-import { AppContextProps } from './AppContext';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export interface AppState {
   [PANEL_HOME]: any,
@@ -46,9 +45,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      const response = await CardModel.getCards();
-      // @ts-ignore
-      const cards = response.map((card: CardModel) => new CardModel(card));
+      const { cards } = await appContext.apiRequest('cards');
       setState( { ...state,
         [PANEL_DAY]: { cards },
         [PANEL_LESSON]: { cards }
@@ -60,8 +57,16 @@ export const App: React.FC = () => {
     setState({ ...state, [panel]: data });
   });
 
+  const apiRequest = (method: string, params?: ApiRequestParams) => {
+    if (params?.data) {
+      return request.post(method, params.data);
+    }
+    return request.get(method);
+  };
+
   const appContext: AppContextProps = {
-    updatePanel: updatePanel,
+    updatePanel,
+    apiRequest
   };
 
   return (
