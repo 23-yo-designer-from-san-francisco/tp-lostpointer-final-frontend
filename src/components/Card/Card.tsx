@@ -4,10 +4,9 @@ import request from '../../services/request';
 import { ContentType } from '../../services/requestUtils';
 
 export interface CardProps {
-  done?: boolean;
+    done?: boolean;
     imgUrl?: string;
 }
-
 
 const Card: React.FC<CardProps> = ({ done, imgUrl }) => {
   const [_done, setDone] = useState<boolean>(Boolean(done));
@@ -17,15 +16,14 @@ const Card: React.FC<CardProps> = ({ done, imgUrl }) => {
   const clickHandler = () => {
     setDone(!_done);
   };
+
   const uploadFileHandler = async (event: any) => {
     event.preventDefault();
 
     const file = event.target.files[0];
-    // const readFile = null;
 
     const formdata = new FormData();
     formdata.append('image', file);
-    formdata.append('json', '{"name":"card","startTime":"05:00","endTime":"06:00"}');
     // В result будет полная информация о карточке, а она нам нужна? Мб просто успешно изменение или нет
     const result = await request.post('cards', formdata, ContentType.FORM);
 
@@ -60,11 +58,13 @@ const Card: React.FC<CardProps> = ({ done, imgUrl }) => {
       {!imgUrl && loadedImg &&
           <div className={styles.cardInner}>
             <img src={loadedImg} />
-          </div>}
+          </div>
+      }
       {imgUrl && !_done &&
           <div className={styles.cardInner}>
             <img src={imgUrl} />
-          </div>}
+          </div>
+      }
       {imgUrl && _done &&
           <div className={`${styles.cardInner} ${styles.transparent}`}>
             <img src={imgUrl}/>

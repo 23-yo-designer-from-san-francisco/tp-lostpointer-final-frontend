@@ -7,13 +7,12 @@ import { BeforeAfter } from './BeforeAfter/BeforeAfter';
 import { Timer } from './Timer/Timer';
 import { Tabbar } from './Tabbar/Tabbar';
 import { PANEL_BEFORE_AFTER, PANEL_DAY, PANEL_HOME, PANEL_LESSON, PANEL_TIMER } from './pages';
-import { CardModel } from './models/card';
-import { AppContext } from './AppContext';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { AppContext, AppContextProps } from './AppContext';
+import request from './services/request';
+import { ApiRequestParams, CardModel } from './Interfaces';
 
 import styles from './App.module.css';
-import { AppContextProps } from './AppContext';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export interface AppState {
   [PANEL_HOME]: any,
@@ -25,8 +24,9 @@ export interface AppState {
   },
   [PANEL_BEFORE_AFTER]: any,
   [PANEL_TIMER]: {
-    remainingTime: number
-  }
+    remainingTime: number,
+  },
+  loaded: boolean,
 }
 
 export const App: React.FC = () => {
@@ -42,17 +42,13 @@ export const App: React.FC = () => {
     [PANEL_TIMER]: {
       remainingTime: 0,
     },
+    loaded: false,
   });
 
   useEffect(() => {
     (async () => {
-      const response = await CardModel.getCards();
-      // @ts-ignore
-      const cards = response.map((card: CardModel) => new CardModel(card));
-      setState( { ...state,
-        [PANEL_DAY]: { cards },
-        [PANEL_LESSON]: { cards }
-      });
+      const { cards } = await appContext.apiRequest('cards');
+      setState({ ...state, [PANEL_DAY]: { cards }, [PANEL_LESSON]: { cards }, loaded: true });
     })();
   }, []);
 
@@ -60,9 +56,19 @@ export const App: React.FC = () => {
     setState({ ...state, [panel]: data });
   });
 
-  const appContext: AppContextProps = {
-    updatePanel: updatePanel,
+  const apiRequest = (method: string, params?: ApiRequestParams) => {
+    if (params?.data) {
+      return request.post(method, params.data);
+    }
+    return request.get(method);
   };
+
+  const appContext: AppContextProps = {
+    updatePanel,
+    apiRequest
+  };
+
+  const { loaded } = state;
 
   return (
     <AppContext.Provider value={appContext}>
@@ -71,18 +77,20 @@ export const App: React.FC = () => {
           <Route path="/" element={
             <Home id={PANEL_HOME} />
           } />
-          <Route path="day" element={
-            <Day cards={state[PANEL_DAY].cards} id={PANEL_DAY} />
-          }/>
-          <Route path="lesson" element={
-            <Lesson cards={state[PANEL_LESSON].cards} id={PANEL_LESSON} />
-          }/>
-          <Route path="before-after" element={
-            <BeforeAfter id={PANEL_BEFORE_AFTER} />
-          }/>
-          <Route path="timer" element={
-            <Timer remainingTime={state[PANEL_TIMER].remainingTime} id={PANEL_TIMER}/>
-          }/>
+          {loaded && <>
+            <Route path="day" element={
+              <Day cards={state[PANEL_DAY].cards} id={PANEL_DAY} />
+            }/>
+            <Route path="lesson" element={
+              <Lesson cards={state[PANEL_LESSON].cards} id={PANEL_LESSON} />
+            }/>
+            <Route path="before-after" element={
+              <BeforeAfter id={PANEL_BEFORE_AFTER} />
+            }/>
+            <Route path="timer" element={
+              <Timer remainingTime={state[PANEL_TIMER].remainingTime} id={PANEL_TIMER}/>
+            }/>
+          </>}
         </Routes>
         <Tabbar/>
       </div>
