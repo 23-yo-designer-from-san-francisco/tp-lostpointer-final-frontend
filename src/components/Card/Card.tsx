@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './Card.module.css';
-import request from '../../services/request';
 import { ContentType } from '../../services/requestUtils';
+import { apiRequest } from '../../services/request';
 
 export interface CardProps {
     done?: boolean;
@@ -25,7 +25,7 @@ const Card: React.FC<CardProps> = ({ done, imgUrl }) => {
     const formdata = new FormData();
     formdata.append('image', file);
     // В result будет полная информация о карточке, а она нам нужна? Мб просто успешно изменение или нет
-    const result = await request.post('cards', formdata, ContentType.FORM);
+    const result = await apiRequest.post('cards', formdata, ContentType.FORM);
 
     const ext = file.name
       .substring(file.name.lastIndexOf('.') + 1)
@@ -50,7 +50,7 @@ const Card: React.FC<CardProps> = ({ done, imgUrl }) => {
           type='file'
           name='file'
           id='file'
-          accept='image/png, image/jpg, image/webp'
+          accept='image/png, image/jpeg, image/webp'
           className={styles.cardFormFile}
         />
         <label htmlFor='file' className={styles.cardInner}>+</label>

@@ -8,9 +8,8 @@ import { Timer } from './Timer/Timer';
 import { Tabbar } from './Tabbar/Tabbar';
 import { PANEL_BEFORE_AFTER, PANEL_DAY, PANEL_HOME, PANEL_LESSON, PANEL_TIMER } from './pages';
 import { AppContext, AppContextProps } from './AppContext';
-import request from './services/request';
-import { ApiRequestParams, CardModel } from './Interfaces';
-
+import { CardModel } from './Interfaces';
+import { apiRequest } from './services/request';
 import styles from './App.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -47,7 +46,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      const { cards } = await appContext.apiRequest('cards');
+      const { cards } = await apiRequest.get('cards');
       setState({ ...state, [PANEL_DAY]: { cards }, [PANEL_LESSON]: { cards }, loaded: true });
     })();
   }, []);
@@ -56,16 +55,8 @@ export const App: React.FC = () => {
     setState({ ...state, [panel]: data });
   });
 
-  const apiRequest = (method: string, params?: ApiRequestParams) => {
-    if (params?.data) {
-      return request.post(method, params.data);
-    }
-    return request.get(method);
-  };
-
   const appContext: AppContextProps = {
     updatePanel,
-    apiRequest
   };
 
   const { loaded } = state;

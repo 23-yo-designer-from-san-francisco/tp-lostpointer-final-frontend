@@ -14,6 +14,47 @@ export class Request {
     this.backendDomain = domain;
   }
 
+  patch(
+    path: string,
+    requestBody?: BodyInit,
+    contentType?: string,
+    customHeaders?: object
+  ): Promise<any> {
+    return this._fetchRequest(
+      this._createURL(this.backendDomain, path),
+      RequestMethods.PATCH,
+      requestBody,
+      contentType,
+      customHeaders
+    );
+  }
+
+  put(
+    path: string,
+    requestBody?: BodyInit,
+    contentType?: string
+  ): Promise<any> {
+    return this._fetchRequest(
+      this._createURL(this.backendDomain, path),
+      RequestMethods.PUT,
+      requestBody,
+      contentType
+    );
+  }
+
+  delete(
+    path: string,
+    requestBody?: BodyInit,
+    contentType?: string
+  ): Promise<any> {
+    return this._fetchRequest(
+      this._createURL(this.backendDomain, path),
+      RequestMethods.DELETE,
+      requestBody,
+      contentType
+    );
+  }
+
   post(
     path: string,
     requestBody?: BodyInit,
@@ -68,4 +109,4 @@ export class Request {
   }
 }
 
-export default new Request();
+export const apiRequest = new Request();
