@@ -8,10 +8,10 @@ export const ContentType = {
   FORM: 'multipart/form-data',
 };
 
-export const RequestMethods = {
-  POST: 'POST',
-  PUT: 'PUT',
-  PATCH: 'PATCH',
-  GET: 'GET',
-  DELETE: 'DELETE',
-};
+export enum RequestMethods {
+  POST = 'POST',
+  PUT = 'PUT',
+  PATCH = 'PATCH',
+  GET ='GET',
+  DELETE = 'DELETE',
+}

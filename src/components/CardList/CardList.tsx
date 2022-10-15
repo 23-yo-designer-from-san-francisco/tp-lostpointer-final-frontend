@@ -4,6 +4,7 @@ import { AppContext } from '../../AppContext';
 
 import styles from './CardList.module.css';
 import { CardModel } from '../../Interfaces';
+import { apiRequest } from '../../services/request';
 
 export interface CardListProps {
     id: string;
@@ -18,6 +19,9 @@ const CardList: React.FC<CardListProps> = ({ id, parent,  cards = [] }) => {
   const addCardHandler = () => {
     appContext.updatePanel(parent, { cards: cards.concat({ done: false, imgUrl: '' }) });
     listRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'end' });
+
+    // Не работает "ручка" ,,, )))) надо сначала починить а потом это имплементирован.
+    apiRequest.post('cards');
   };
 
   const renderedCards = useMemo(() => {
