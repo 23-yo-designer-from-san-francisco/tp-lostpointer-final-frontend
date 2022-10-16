@@ -602,6 +602,11 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
+bootstrap-icons-react@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/bootstrap-icons-react/-/bootstrap-icons-react-1.0.0.tgz#bd4d9e735e8c9c3133a6ce8515c9bd64a897e8c4"
+  integrity sha512-1+f0byDe2V1/AYFb2aAf3ea7Djb01fQV5kI57Jjl1QvLvsXdyNdtj7zgYtqEg1XA7LgWWgdHi1v6f9ka0Cm5nw==
+
 bootstrap@^5.2.2:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-5.2.2.tgz#834e053eed584a65e244d8aa112a6959f56e27a0"

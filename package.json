@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.2.2",
+    "bootstrap-icons-react": "^1.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",
