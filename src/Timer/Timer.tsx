@@ -23,6 +23,18 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
   return(
     <div id={id}>
       <div className={styles.timerContainer}>
+        <div className={styles.presets}>
+          <div className={styles.preset}>0:30</div>
+          <div className={styles.preset}>0:30</div>
+          <div className={styles.preset}>0:30</div>
+          <div className={styles.preset}>0:30</div>
+          <div className={styles.preset}>0:30</div>
+          <div className={styles.preset}>0:30</div>
+          <div className={styles.preset}>0:30</div>
+          <div className={styles.preset}>0:30</div>
+          <div className={styles.preset}>0:30</div>
+          <div className={styles.preset}>0:30</div>
+        </div>
         <CountdownCircleTimer
           isPlaying
           duration={duration}
@@ -31,11 +43,11 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
         >
           {({ remainingTime }) => remainingTime}
         </CountdownCircleTimer>
+        <form className={styles.setTimeForm}>
+          <input type="number" min={0} onChange={(e) => setUserDefinedDuration(parseInt(e.currentTarget.value))}/>
+          <Button onClick={updateDurationHandler}>Установить</Button>
+        </form>
       </div>
-      <form>
-        <input type="number" min={0} onChange={(e) => setUserDefinedDuration(parseInt(e.currentTarget.value))}/>
-        <Button onClick={updateDurationHandler}>Установить</Button>
-      </form>
     </div>
   );
 };
