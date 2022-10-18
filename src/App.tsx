@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Home } from './Home';
-import { Day } from './Day/Day';
-import { Lesson } from './Lesson/Lesson';
-import { BeforeAfter } from './BeforeAfter/BeforeAfter';
-import { Timer } from './Timer/Timer';
-import { Tabbar } from './Tabbar/Tabbar';
+import { Day } from './components/Day/Day';
+import { Lesson } from './components/Lesson/Lesson';
+import { BeforeAfter } from './components/BeforeAfter/BeforeAfter';
+import { Timer } from './components/Timer/Timer';
+import { Tabbar } from './components/Tabbar/Tabbar';
 import { PANEL_BEFORE_AFTER, PANEL_DAY, PANEL_HOME, PANEL_LESSON, PANEL_TIMER } from './pages';
 import { AppContext, AppContextProps } from './AppContext';
 import { CardModel } from './Interfaces';
 import { apiRequest } from './services/request';
 import styles from './App.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { EditCard } from './components/EditCard/EditCard';
 
 const daySCheduleId = '35';
 const lessonScheduleId = '36';
@@ -84,6 +85,9 @@ export const App: React.FC = () => {
             }/>
             <Route path="timer" element={
               <Timer remainingTime={state[PANEL_TIMER].remainingTime} id={PANEL_TIMER}/>
+            }/>
+            <Route path="new" element={
+              <EditCard/>
             }/>
           </>}
         </Routes>
