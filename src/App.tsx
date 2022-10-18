@@ -64,9 +64,11 @@ export const App: React.FC = () => {
   const updatePanel = ((panel: string, data: any) => {
     setState({ ...state, [panel]: data });
   });
+  const getPanelData = ((panel: string) => state[panel]);
 
   const appContext: AppContextProps = {
     updatePanel,
+    getPanelData,
   };
 
   const { loaded } = state;

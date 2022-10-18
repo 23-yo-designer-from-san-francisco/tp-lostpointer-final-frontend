@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apiRequest } from '../../services/request';
 import { ContentType } from '../../services/requestUtils';
+import { AppContext } from '../../AppContext';
+import { PANEL_DAY } from '../../pages';
 
 import styles from './EditCard.module.css';
 
@@ -12,8 +14,10 @@ export interface EditCardProps {
 }
 
 const EditCard: React.FC<EditCardProps> = ({ id, name, imgUrl }) => {
+  const appContext = useContext(AppContext);
   const [warning, setWarning] = useState<string>('');
   const [newName, setName] = useState<string|undefined>(name);
+  const [newFile, setFile] = useState<File|null>(null);
   const { scheduleId } = useParams();
   const navigate = useNavigate();
   const [loadedImg, setLoadedImg] = useState<string>('');
@@ -22,18 +26,21 @@ const EditCard: React.FC<EditCardProps> = ({ id, name, imgUrl }) => {
     event.preventDefault();
     if (!loadedImg && newName == name) {
       setWarning('Нужно новое фото или имя!');
-    } else if (!loadedImg) {
+    } else if (!newFile) {
       setWarning('Нужно новое фото!');
-    } else if (!loadedImg && newName || loadedImg) {
+    } else if (!newFile && newName || newFile) {
       setWarning('');
       const formdata = new FormData();
-      if (loadedImg) {
-        formdata.append('image', loadedImg);
+      if (newFile) {
+        formdata.append('image', newFile);
       }
       if (newName) {
         formdata.append('card', JSON.stringify({ 'name': newName }));
       }
-      const card = await apiRequest.post(`schedules/day/${scheduleId}/cards`, formdata, ContentType.FORM);
+      const newCard = await apiRequest.post(`schedules/day/${scheduleId}/cards`, formdata, ContentType.FORM);
+      const { cards } = appContext.getPanelData(PANEL_DAY);
+      appContext.updatePanel(PANEL_DAY, { cards: [...cards, newCard] });
+      navigate(-1);
     }
   };
 
@@ -49,6 +56,7 @@ const EditCard: React.FC<EditCardProps> = ({ id, name, imgUrl }) => {
     event.preventDefault();
 
     const file = event.target.files[0];
+    setFile(file);
 
     const formdata = new FormData();
     formdata.append('image', file);
