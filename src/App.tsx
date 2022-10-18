@@ -6,16 +6,21 @@ import { Lesson } from './components/Lesson/Lesson';
 import { BeforeAfter } from './components/BeforeAfter/BeforeAfter';
 import { Timer } from './components/Timer/Timer';
 import { Tabbar } from './components/Tabbar/Tabbar';
-import { PANEL_BEFORE_AFTER, PANEL_DAY, PANEL_HOME, PANEL_LESSON, PANEL_TIMER } from './pages';
+import {
+  DAY_SCHEDULE_ID,
+  LESSON_SCHEDULE_ID,
+  PANEL_BEFORE_AFTER,
+  PANEL_DAY,
+  PANEL_HOME,
+  PANEL_LESSON,
+  PANEL_TIMER
+} from './pages';
 import { AppContext, AppContextProps } from './AppContext';
 import { CardModel } from './Interfaces';
 import { apiRequest } from './services/request';
 import styles from './App.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { EditCard } from './components/EditCard/EditCard';
-
-const daySCheduleId = '35';
-const lessonScheduleId = '36';
 
 export interface AppState {
   [PANEL_HOME]: any,
@@ -50,8 +55,8 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      const dayCards = await apiRequest.get(`schedules/day/${daySCheduleId}/cards`);
-      const lessonCards = await apiRequest.get(`schedules/day/${lessonScheduleId}/cards`);
+      const dayCards = await apiRequest.get(`schedules/day/${DAY_SCHEDULE_ID}/cards`);
+      const lessonCards = await apiRequest.get(`schedules/day/${LESSON_SCHEDULE_ID}/cards`);
       setState({ ...state, [PANEL_DAY]: { cards: dayCards }, [PANEL_LESSON]: { cards: lessonCards }, loaded: true });
     })();
   }, []);
@@ -74,19 +79,22 @@ export const App: React.FC = () => {
             <Home id={PANEL_HOME} />
           } />
           {loaded && <>
-            <Route path="day" element={
-              <Day cards={state[PANEL_DAY].cards} scheduleId={daySCheduleId} id={PANEL_DAY} />
+            <Route path="/day/:scheduleId" element={
+              <Day cards={state[PANEL_DAY].cards} id={PANEL_DAY} />
             }/>
-            <Route path="lesson" element={
-              <Lesson cards={state[PANEL_LESSON].cards} scheduleId={lessonScheduleId} id={PANEL_LESSON} />
+            <Route path="/lesson/:scheduleId" element={
+              <Lesson cards={state[PANEL_LESSON].cards} id={PANEL_LESSON} />
             }/>
-            <Route path="before-after" element={
+            <Route path="/before-after" element={
               <BeforeAfter id={PANEL_BEFORE_AFTER} />
             }/>
             <Route path="timer" element={
               <Timer remainingTime={state[PANEL_TIMER].remainingTime} id={PANEL_TIMER}/>
             }/>
-            <Route path="new" element={
+            <Route path="/day/:scheduleId/new" element={
+              <EditCard/>
+            }/>
+            <Route path="/lesson/:scheduleId/new" element={
               <EditCard/>
             }/>
           </>}

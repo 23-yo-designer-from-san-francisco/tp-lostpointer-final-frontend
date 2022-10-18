@@ -1,13 +1,13 @@
 import React, { useContext, useMemo, useRef } from 'react';
 import { Card } from '../Card/Card';
 import { AppContext } from '../../AppContext';
+import { CardModel } from '../../Interfaces';
 
 import styles from './CardList.module.css';
-import { CardModel } from '../../Interfaces';
 
 export interface CardListProps {
     id: string;
-    scheduleId: string;
+    scheduleId?: string;
     parent: string;
     cards: CardModel[];
 }
