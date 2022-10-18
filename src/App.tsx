@@ -13,6 +13,9 @@ import { apiRequest } from './services/request';
 import styles from './App.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+const daySCheduleId = '35';
+const lessonScheduleId = '36';
+
 export interface AppState {
   [PANEL_HOME]: any,
   [PANEL_DAY]: {
@@ -46,8 +49,9 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      const { cards } = await apiRequest.get('cards');
-      setState({ ...state, [PANEL_DAY]: { cards }, [PANEL_LESSON]: { cards }, loaded: true });
+      const dayCards = await apiRequest.get(`schedules/day/${daySCheduleId}/cards`);
+      const lessonCards = await apiRequest.get(`schedules/day/${lessonScheduleId}/cards`);
+      setState({ ...state, [PANEL_DAY]: { cards: dayCards }, [PANEL_LESSON]: { cards: lessonCards }, loaded: true });
     })();
   }, []);
 
@@ -70,10 +74,10 @@ export const App: React.FC = () => {
           } />
           {loaded && <>
             <Route path="day" element={
-              <Day cards={state[PANEL_DAY].cards} id={PANEL_DAY} />
+              <Day cards={state[PANEL_DAY].cards} scheduleId={daySCheduleId} id={PANEL_DAY} />
             }/>
             <Route path="lesson" element={
-              <Lesson cards={state[PANEL_LESSON].cards} id={PANEL_LESSON} />
+              <Lesson cards={state[PANEL_LESSON].cards} scheduleId={lessonScheduleId} id={PANEL_LESSON} />
             }/>
             <Route path="before-after" element={
               <BeforeAfter id={PANEL_BEFORE_AFTER} />

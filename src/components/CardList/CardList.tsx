@@ -4,32 +4,30 @@ import { AppContext } from '../../AppContext';
 
 import styles from './CardList.module.css';
 import { CardModel } from '../../Interfaces';
-import { apiRequest } from '../../services/request';
 
 export interface CardListProps {
     id: string;
+    scheduleId: string;
     parent: string;
     cards: CardModel[];
 }
 
-const CardList: React.FC<CardListProps> = ({ id, parent,  cards = [] }) => {
+const CardList: React.FC<CardListProps> = ({ id, scheduleId, parent,  cards = [] }) => {
   const appContext = useContext(AppContext);
   const listRef = useRef<any>();
 
   const addCardHandler = () => {
-    appContext.updatePanel(parent, { cards: cards.concat({ done: false, imgUrl: '' }) });
+    appContext.updatePanel(parent, { cards: cards.concat({ done: false, imgUrl: '', scheduleId: scheduleId }) });
     listRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'end' });
-
-    // Не работает "ручка" ,,, )))) надо сначала починить а потом это имплементирован.
-    apiRequest.post('cards');
   };
 
   const renderedCards = useMemo(() => {
-    return cards.map(({ done, imgUrl }, i) =>
+    return cards.map(({ done, imgUrl, scheduleId }, i) =>
       <li key={i}>
         <Card
           done={done}
           imgUrl={imgUrl}
+          scheduleId={scheduleId}
         />
       </li>
     );

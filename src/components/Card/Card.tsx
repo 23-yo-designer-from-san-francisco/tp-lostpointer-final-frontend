@@ -6,9 +6,10 @@ import { apiRequest } from '../../services/request';
 export interface CardProps {
     done?: boolean;
     imgUrl?: string;
+    scheduleId?: string;
 }
 
-const Card: React.FC<CardProps> = ({ done, imgUrl }) => {
+const Card: React.FC<CardProps> = ({ done, imgUrl , scheduleId }) => {
   const [_done, setDone] = useState<boolean>(Boolean(done));
   const [loadedImg, setLoadedImg] = useState<string>('');
 
@@ -25,7 +26,7 @@ const Card: React.FC<CardProps> = ({ done, imgUrl }) => {
     const formdata = new FormData();
     formdata.append('image', file);
     // В result будет полная информация о карточке, а она нам нужна? Мб просто успешно изменение или нет
-    const result = await apiRequest.post('cards', formdata, ContentType.FORM);
+    const result = await apiRequest.post(`schedules/day/${scheduleId}/cards`, formdata, ContentType.FORM);
 
     const ext = file.name
       .substring(file.name.lastIndexOf('.') + 1)
