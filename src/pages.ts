@@ -9,3 +9,10 @@ export const LESSON_CARD_LIST = 'lesson-card-list';
 
 export const DAY_SCHEDULE_ID = '35';
 export const LESSON_SCHEDULE_ID = '36';
+
+export declare type Panel =
+    'panel-day' |
+    'panel-lesson' |
+    'panel-before-after' |
+    'panel-timer' |
+    'home';

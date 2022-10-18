@@ -13,7 +13,8 @@ import {
   PANEL_DAY,
   PANEL_HOME,
   PANEL_LESSON,
-  PANEL_TIMER
+  PANEL_TIMER,
+  Panel
 } from './pages';
 import { AppContext, AppContextProps } from './AppContext';
 import { CardModel } from './Interfaces';
@@ -57,14 +58,20 @@ export const App: React.FC = () => {
     (async () => {
       const dayCards = await apiRequest.get(`schedules/day/${DAY_SCHEDULE_ID}/cards`);
       const lessonCards = await apiRequest.get(`schedules/day/${LESSON_SCHEDULE_ID}/cards`);
-      setState({ ...state, [PANEL_DAY]: { cards: dayCards }, [PANEL_LESSON]: { cards: lessonCards }, loaded: true });
+      setState({
+        ...state,
+        [PANEL_DAY]: { cards: dayCards?.cards || [] },
+        [PANEL_LESSON]: { cards: lessonCards?.cards || [] },
+        loaded: true
+      });
     })();
   }, []);
 
   const updatePanel = ((panel: string, data: any) => {
     setState({ ...state, [panel]: data });
   });
-  const getPanelData = ((panel: string) => state[panel]);
+
+  const getPanelData = ((panel: Panel) => state[panel]);
 
   const appContext: AppContextProps = {
     updatePanel,
