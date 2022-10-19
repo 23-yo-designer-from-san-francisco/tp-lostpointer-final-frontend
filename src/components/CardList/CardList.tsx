@@ -17,7 +17,7 @@ const CardList: React.FC<CardListProps> = ({ id, scheduleId, parent,  cards = []
   const listRef = useRef<any>();
 
   const addCardHandler = () => {
-    appContext.updatePanel(parent, { cards: cards.concat({ done: false, imgUrl: '', schedule_id: scheduleId }) });
+    appContext.updatePanel(parent, { cards: cards.concat({ orderPlace: cards.length, schedule_id: scheduleId }) });
     listRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'end' });
   };
 

@@ -9,10 +9,10 @@ import { CardModel } from '../../Interfaces';
 import styles from './EditCard.module.css';
 
 export interface EditCardProps {
-  id: string;
+  parent: string;
 }
 
-const EditCard: React.FC<EditCardProps> = ({ id }) => {
+const EditCard: React.FC<EditCardProps> = ({ parent }) => {
   const appContext = useContext(AppContext);
   const { scheduleId, cardId } = useParams();
   const navigate = useNavigate();
@@ -21,16 +21,16 @@ const EditCard: React.FC<EditCardProps> = ({ id }) => {
   const [loadedImg, setLoadedImg] = useState<string>('');
 
   let endpointPrefix = '';
-  if (id === PANEL_DAY) {
+  if (parent === PANEL_DAY) {
     endpointPrefix = 'day';
-  } else if (id === PANEL_LESSON) {
+  } else if (parent === PANEL_LESSON) {
     endpointPrefix = 'lesson';
   }
 
   let currentName = '';
   let currentImgUrl = '';
   if (cardId) {
-    const { cards } = appContext.getPanelData(id);
+    const { cards } = appContext.getPanelData(parent);
     const currentCard = cards.find((card: CardModel) => String(card.id) === cardId);
     currentName = currentCard.name;
     currentImgUrl = currentCard.imgUrl;
@@ -54,15 +54,17 @@ const EditCard: React.FC<EditCardProps> = ({ id }) => {
         formdata.append('card', JSON.stringify({ 'name': newName }));
       }
       if (cardId) {
-        const { cards } = appContext.getPanelData(id);
+        const { cards } = appContext.getPanelData(parent);
         const currentCard = cards.find((card: CardModel) => String(card.id) === cardId);
         currentCard.name = currentName;
         currentCard.imgUrl = loadedImg;
         await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}`, formdata, ContentType.FORM);
       } else {
         const newCard = await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards`, formdata, ContentType.FORM);
-        const { cards } = appContext.getPanelData(id);
-        appContext.updatePanel(id, { cards: [...cards, newCard] });
+        const { cards } = appContext.getPanelData(parent);
+        const index = cards.findIndex((card: CardModel) => !card.id);
+        cards[index] = newCard;
+        appContext.updatePanel(parent, { cards: cards });
       }
       navigate(-1);
     }
@@ -90,7 +92,7 @@ const EditCard: React.FC<EditCardProps> = ({ id }) => {
 
   const deleteCard = async () => {
     await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}/goodbye`);
-    const { cards } = appContext.getPanelData(id);
+    const { cards } = appContext.getPanelData(parent);
     cards.splice(cards.findIndex((card: CardModel) => String(card.id) === cardId), 1);
     navigate(-1);
   };
