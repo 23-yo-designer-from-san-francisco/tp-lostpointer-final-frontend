@@ -16,18 +16,28 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
   const [duration, setDuration] = useState<number>(remainingTime);
   const [key, setKey] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
+  const [paused, setIsPaused] = useState<boolean>(false);
 
   const playClicked = () => {
+    if (paused) {
+      setIsPaused(false);
+      return setIsPlaying(true);
+    }
     setDuration(userDefinedDuration);
+    if (!isPlaying) {
+      setIsPlaying(true);
+    }
     setKey(key + 1);
   };
 
   const pauseClicked = () => {
     setIsPlaying(false);
+    setIsPaused(true);
   };
 
   const stopClicked = () => {
     setIsPlaying(false);
+    setIsPaused(false);
     setDuration(0);
     setKey(key + 1);
   };
@@ -60,7 +70,11 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
           }}
         </CountdownCircleTimer>
         <form className={styles.setTimeForm}>
-          <input type="number" min={0} onChange={(e) => setUserDefinedDuration(parseInt(e.currentTarget.value))}/>
+          <input
+            type="number"
+            min={0}
+            onChange={(e) => setUserDefinedDuration(parseInt(e.currentTarget.value))}
+          />
           <Button onClick={playClicked}>
             <PlayBtn/>
           </Button>
