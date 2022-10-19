@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { Home } from './Home';
 import { Day } from './components/Day/Day';
 import { Lesson } from './components/Lesson/Lesson';
@@ -38,6 +38,7 @@ export interface AppState {
 }
 
 export const App: React.FC = () => {
+  const { pathname } = useLocation();
   const [state, setState] = useState<AppState>({
     [PANEL_HOME]: {},
     [PANEL_DAY]: {
@@ -82,6 +83,9 @@ export const App: React.FC = () => {
   return (
     <AppContext.Provider value={appContext}>
       <div className={styles.app}>
+        <div className={pathname === '/timer' ? styles.timer : styles.timerHidden}>
+          <Timer remainingTime={state[PANEL_TIMER].remainingTime} id={PANEL_TIMER}/>
+        </div>
         <Routes>
           <Route path="/" element={
             <Home id={PANEL_HOME} />
@@ -96,9 +100,7 @@ export const App: React.FC = () => {
             <Route path="/before-after" element={
               <BeforeAfter id={PANEL_BEFORE_AFTER} />
             }/>
-            <Route path="timer" element={
-              <Timer remainingTime={state[PANEL_TIMER].remainingTime} id={PANEL_TIMER}/>
-            }/>
+            <Route path="timer" />
             <Route path="/day/:scheduleId/new" element={
               <EditCard id={PANEL_DAY}/>
             }/>
