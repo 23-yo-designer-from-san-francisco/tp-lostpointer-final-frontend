@@ -3,7 +3,7 @@ export interface CardModel {
     name?: string;
     done?: boolean;
     imgUrl?: string;
-    scheduleId?: string;
+    scheduleId?: number;
 }
 
 export interface ApiRequestParams {

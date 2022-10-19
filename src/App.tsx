@@ -6,9 +6,7 @@ import { Lesson } from './components/Lesson/Lesson';
 import { BeforeAfter } from './components/BeforeAfter/BeforeAfter';
 import { Timer } from './components/Timer/Timer';
 import { Tabbar } from './components/Tabbar/Tabbar';
-import {
-  DAY_SCHEDULE_ID,
-  LESSON_SCHEDULE_ID,
+import { DEFAULT_SCHEDULE_ID,
   PANEL_BEFORE_AFTER,
   PANEL_DAY,
   PANEL_HOME,
@@ -18,9 +16,10 @@ import {
 import { AppContext, AppContextProps } from './AppContext';
 import { CardModel } from './Interfaces';
 import { apiRequest } from './services/request';
-import styles from './App.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { EditCard } from './components/EditCard/EditCard';
+
+import styles from './App.module.css';
 
 export interface AppState {
   [PANEL_HOME]: any,
@@ -55,8 +54,8 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      const dayCards = await apiRequest.get(`schedules/day/${DAY_SCHEDULE_ID}/cards`);
-      const lessonCards = await apiRequest.get(`schedules/day/${LESSON_SCHEDULE_ID}/cards`);
+      const dayCards = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
+      const lessonCards = await apiRequest.get(`schedules/lesson/${DEFAULT_SCHEDULE_ID}/cards`);
       setState({ ...state, [PANEL_DAY]: { cards: dayCards }, [PANEL_LESSON]: { cards: lessonCards }, loaded: true });
     })();
   }, []);
@@ -94,10 +93,16 @@ export const App: React.FC = () => {
               <Timer remainingTime={state[PANEL_TIMER].remainingTime} id={PANEL_TIMER}/>
             }/>
             <Route path="/day/:scheduleId/new" element={
-              <EditCard/>
+              <EditCard id={PANEL_DAY}/>
+            }/>
+            <Route path="/day/:scheduleId/card/:cardId" element={
+              <EditCard id={PANEL_DAY}/>
             }/>
             <Route path="/lesson/:scheduleId/new" element={
-              <EditCard/>
+              <EditCard id={PANEL_LESSON}/>
+            }/>
+            <Route path="/lesson/:scheduleId/card/:cardId" element={
+              <EditCard id={PANEL_LESSON}/>
             }/>
           </>}
         </Routes>

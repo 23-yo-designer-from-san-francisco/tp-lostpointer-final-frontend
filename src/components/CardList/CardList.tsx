@@ -7,7 +7,7 @@ import styles from './CardList.module.css';
 
 export interface CardListProps {
     id: string;
-    scheduleId?: string;
+    scheduleId?: number;
     parent: string;
     cards: CardModel[];
 }
@@ -22,9 +22,10 @@ const CardList: React.FC<CardListProps> = ({ id, scheduleId, parent,  cards = []
   };
 
   const renderedCards = useMemo(() => {
-    return cards.map(({ done, imgUrl, scheduleId }, i) =>
+    return cards.map(({ id, done, imgUrl, scheduleId }, i) =>
       <li key={i}>
         <Card
+          cardId={id}
           done={done}
           imgUrl={imgUrl}
           scheduleId={scheduleId}
