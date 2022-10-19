@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useLongPress from '../../useLongPress';
-import { PANEL_DAY, PANEL_LESSON } from '../../pages';
+import { Panel, PANEL_DAY, PANEL_LESSON } from '../../pages';
 import { apiRequest } from '../../services/request';
 import { ContentType } from '../../services/requestUtils';
 import { AppContext } from '../../AppContext';
@@ -10,7 +10,7 @@ import { CardModel } from '../../Interfaces';
 import styles from './Card.module.css';
 
 export interface CardProps {
-  parent: string;
+  parent: Panel;
   done?: boolean;
   cardId?: number;
   imgUrl?: string;
@@ -29,7 +29,7 @@ const Card: React.FC<CardProps> = ({ parent, cardId, done, imgUrl, scheduleId })
     endpointPrefix = 'lesson';
   }
 
-  const setDoneHandler = () => {
+  const toggleDone = () => {
     setDone(!_done);
     const { cards } = appContext.getPanelData(parent);
     const currentCard = cards.find((card: CardModel) => card.id === cardId);
@@ -37,7 +37,7 @@ const Card: React.FC<CardProps> = ({ parent, cardId, done, imgUrl, scheduleId })
     (async () => {
       const formdata = new FormData();
       formdata.append('card', JSON.stringify({ 'done': !_done }));
-      const updatedCard = await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}`, formdata, ContentType.FORM);
+      await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}`, formdata, ContentType.FORM);
     })();
   };
 
@@ -57,22 +57,11 @@ const Card: React.FC<CardProps> = ({ parent, cardId, done, imgUrl, scheduleId })
     navigate('new');
   };
 
-  return(
-    <div className={styles.card}>
-      {!imgUrl &&
-        <div onClick={createNewHandler} className={styles.cardInner}>+</div>
-      }
-      {imgUrl && !_done &&
-          <div className={styles.cardInner} onClick={setDoneHandler} {...longPressEvent}>
-            <img src={imgUrl}/>
-          </div>
-      }
-      {imgUrl && _done &&
-          <div className={`${styles.cardInner} ${styles.transparent}`} onClick={setDoneHandler} {...longPressEvent}>
-            <img src={imgUrl}/>
-          </div>
-      }
-    </div>);
+  return(<>
+    {!imgUrl && <div onClick={createNewHandler} className={`${styles.card} ${styles.cardEmpty}`}>+</div>}
+    {imgUrl && !_done && <div onClick={toggleDone} className={styles.card} {...longPressEvent}><img className={styles.cardImg} src={imgUrl}/></div>}
+    {imgUrl && _done && <div onClick={toggleDone} className={`${styles.card} ${styles.transparent}`} {...longPressEvent}><img className={styles.cardImg} src={imgUrl}/></div>}
+  </>);
 };
 
 export { Card };

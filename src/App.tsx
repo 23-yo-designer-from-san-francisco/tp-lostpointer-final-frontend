@@ -54,14 +54,24 @@ export const App: React.FC = () => {
     loaded: false,
   });
 
+  const sortCards = (card1: CardModel, card2: CardModel) => {
+    if (card1.orderPlace < card2.orderPlace) {
+      return -1;
+    }
+    if (card1.orderPlace > card2.orderPlace) {
+      return 1;
+    }
+    return 0;
+  };
+
   useEffect(() => {
     (async () => {
-      const dayCards = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
-      const lessonCards = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
+      const dayCards: CardModel[] = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
+      const lessonCards: CardModel[] = await apiRequest.get(`schedules/lesson/${DEFAULT_SCHEDULE_ID}/cards`);
       setState({
         ...state,
-        [PANEL_DAY]: { cards: dayCards?.cards || [] },
-        [PANEL_LESSON]: { cards: lessonCards?.cards || [] },
+        [PANEL_DAY]: { cards: dayCards.sort(sortCards) },
+        [PANEL_LESSON]: { cards: lessonCards.sort(sortCards) },
         loaded: true
       });
     })();
@@ -102,16 +112,16 @@ export const App: React.FC = () => {
             }/>
             <Route path="timer" />
             <Route path="/day/:scheduleId/new" element={
-              <EditCard id={PANEL_DAY}/>
+              <EditCard parent={PANEL_DAY}/>
             }/>
             <Route path="/day/:scheduleId/card/:cardId" element={
-              <EditCard id={PANEL_DAY}/>
+              <EditCard parent={PANEL_DAY}/>
             }/>
             <Route path="/lesson/:scheduleId/new" element={
-              <EditCard id={PANEL_LESSON}/>
+              <EditCard parent={PANEL_LESSON}/>
             }/>
             <Route path="/lesson/:scheduleId/card/:cardId" element={
-              <EditCard id={PANEL_LESSON}/>
+              <EditCard parent={PANEL_LESSON}/>
             }/>
           </>}
         </Routes>

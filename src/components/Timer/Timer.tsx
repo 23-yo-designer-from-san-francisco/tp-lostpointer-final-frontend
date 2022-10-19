@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 // https://www.npmjs.com/package/react-countdown-circle-timer
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { Howl } from 'howler';
+// @ts-ignore тайпскрипты глючат
+import tickSound from '../../../assets/tick.opus';
+// @ts-ignore тайпскрипты глючат
+import finishSound from '../../../assets/finished.opus';
 
 import styles from './Timer.module.css';
 import { Button, Table } from 'react-bootstrap';
@@ -19,22 +23,24 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
   const [userDefinedDuration, setUserDefinedDuration] = useState<number>(0);
   const [duration, setDuration] = useState<number>(remainingTime);
   const [key, setKey] = useState<number>(0);
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
-  const [paused, setIsPaused] = useState<boolean>(false);
-  // const [playSound, exposedData] = useSound('../../../assets/tick.opus');
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isPaused, setIsIsPaused] = useState<boolean>(false);
   const [tick] = useState(new Howl({
-    src: ['../../../assets/tick.opus'],
+    src: [tickSound],
     loop: true,
   }));
   const [finished] = useState(new Howl({
-    src: ['../../../assets/finished.opus'],
+    src: [finishSound],
     loop: true,
   }));
 
   const playClicked = () => {
+    if (userDefinedDuration === 0 || isPlaying && !isPaused) {
+      return;
+    }
     tick.play();
-    if (paused) {
-      setIsPaused(false);
+    if (isPaused) {
+      setIsIsPaused(false);
       return setIsPlaying(true);
     }
     setDuration(userDefinedDuration);
@@ -47,24 +53,26 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
   const pauseClicked = () => {
     tick.stop();
     setIsPlaying(false);
-    setIsPaused(true);
+    setIsIsPaused(true);
   };
 
   const stopClicked = () => {
     tick.stop();
     finished.stop();
     setIsPlaying(false);
-    setIsPaused(false);
+    setIsIsPaused(false);
     setDuration(0);
     setKey(key + 1);
   };
 
   const startTimer = (e: any) => {
+    stopClicked();
     const stringTime = e.currentTarget.innerHTML;
     const seconds = stringTime.split(':').reduce((res: number, time: string) => res * 60 + parseInt(time), 0);
     setDuration(seconds);
+    tick.play();
     setIsPlaying(true);
-    setIsPaused(false);
+    setIsIsPaused(false);
     setKey(key+1);
   };
 
@@ -78,14 +86,23 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
   return(
     <div id={id}>
       <div className={styles.timerContainer}>
-        <Table size="30" className={styles.table} striped bordered hover>
+        <Table className={styles.table} bordered hover>
           <thead>
-            <tr>Часто используемые</tr>
+            <tr><td>Часто используемые</td></tr>
           </thead>
           <tbody>
             {
               ['0:30', '1:25', '2:30', '15:34']
-                .map((time, i) => <tr key={i} onClick={startTimer} className={styles.preset}>{time}</tr>)
+                .map((time, i) =>
+                  <tr
+                    key={i}
+                    className={styles.preset}
+                  >
+                    <td className={styles.td} onClick={startTimer}>
+                      {time}
+                    </td>
+                  </tr>
+                )
             }
           </tbody>
         </Table>
@@ -105,15 +122,17 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
             min={0}
             onChange={(e) => setUserDefinedDuration(parseInt(e.currentTarget.value))}
           />
-          <Button variant="success" className={styles.button} onClick={playClicked}>
-            <Play/>
-          </Button>
-          <Button className={styles.button} onClick={pauseClicked}>
-            <Pause/>
-          </Button>
-          <Button variant="danger" className={styles.button} onClick={stopClicked}>
-            <Stop/>
-          </Button>
+          <div className={styles.buttons}>
+            <Button variant="success" className={styles.button} onClick={playClicked}>
+              <Play/>
+            </Button>
+            <Button className={styles.button} onClick={pauseClicked}>
+              <Pause/>
+            </Button>
+            <Button variant="danger" className={styles.button} onClick={stopClicked}>
+              <Stop/>
+            </Button>
+          </div>
         </form>
       </div>
     </div>

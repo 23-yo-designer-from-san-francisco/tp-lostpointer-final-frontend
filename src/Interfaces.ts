@@ -3,6 +3,7 @@ export interface CardModel {
     name?: string;
     done?: boolean;
     imgUrl?: string;
+    orderPlace: number;
     schedule_id?: number;
 }
 

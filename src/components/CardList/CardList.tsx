@@ -4,11 +4,12 @@ import { AppContext } from '../../AppContext';
 import { CardModel } from '../../Interfaces';
 
 import styles from './CardList.module.css';
+import { List, Panel } from '../../pages';
 
 export interface CardListProps {
-    id: string;
+    id: List;
     scheduleId?: number;
-    parent: string;
+    parent: Panel;
     cards: CardModel[];
 }
 
@@ -17,7 +18,7 @@ const CardList: React.FC<CardListProps> = ({ id, scheduleId, parent,  cards = []
   const listRef = useRef<any>();
 
   const addCardHandler = () => {
-    appContext.updatePanel(parent, { cards: cards.concat({ done: false, imgUrl: '', schedule_id: scheduleId }) });
+    appContext.updatePanel(parent, { cards: cards.concat({ orderPlace: cards.length, schedule_id: scheduleId }) });
     listRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'end' });
   };
 

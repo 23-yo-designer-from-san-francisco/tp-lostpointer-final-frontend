@@ -9,6 +9,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: 150px;
 }
 
 .presets {
@@ -25,4 +26,18 @@
 
 .table {
     width: 30px;
+}
+
+.buttons {
+display: flex;
+    justify-content: space-between;
+}
+
+.table {
+    width: 30px!important;
+}
+
+.td {
+    display: flex;
+    justify-content: center;
 }
