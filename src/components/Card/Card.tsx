@@ -59,8 +59,16 @@ const Card: React.FC<CardProps> = ({ parent, cardId, done, imgUrl, scheduleId })
 
   return(<>
     {!imgUrl && <div onClick={createNewHandler} className={`${styles.card} ${styles.cardEmpty}`}>+</div>}
-    {imgUrl && !_done && <div onClick={toggleDone} className={styles.card} {...longPressEvent}><img className={styles.cardImg} src={imgUrl}/></div>}
-    {imgUrl && _done && <div onClick={toggleDone} className={`${styles.card} ${styles.transparent}`} {...longPressEvent}><img className={styles.cardImg} src={imgUrl}/></div>}
+    {imgUrl && !_done &&
+        // @ts-ignore
+        <div onClick={toggleDone} className={styles.card} {...longPressEvent}>
+          <img className={styles.cardImg} src={imgUrl}/>
+        </div>}
+    {imgUrl && _done &&
+        // @ts-ignore
+        <div onClick={toggleDone} className={`${styles.card} ${styles.transparent}`} {...longPressEvent}>
+          <img className={styles.cardImg} src={imgUrl}/>
+        </div>}
   </>);
 };
 
