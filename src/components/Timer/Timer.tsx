@@ -35,7 +35,7 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
   }));
 
   const playClicked = () => {
-    if (userDefinedDuration === 0 || isPlaying && !isPaused) {
+    if (userDefinedDuration === 0 && !isPaused || isPlaying && !isPaused) {
       return;
     }
     tick.play();
