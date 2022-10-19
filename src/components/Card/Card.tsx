@@ -1,72 +1,74 @@
-import React, { useState } from 'react';
-import styles from './Card.module.css';
-import { ContentType } from '../../services/requestUtils';
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useLongPress from '../../useLongPress';
+import { PANEL_DAY, PANEL_LESSON } from '../../pages';
 import { apiRequest } from '../../services/request';
+import { ContentType } from '../../services/requestUtils';
+import { AppContext } from '../../AppContext';
+import { CardModel } from '../../Interfaces';
+
+import styles from './Card.module.css';
 
 export interface CardProps {
-    done?: boolean;
-    imgUrl?: string;
+  parent: string;
+  done?: boolean;
+  cardId?: number;
+  imgUrl?: string;
+  scheduleId?: number;
 }
 
-const Card: React.FC<CardProps> = ({ done, imgUrl }) => {
+const Card: React.FC<CardProps> = ({ parent, cardId, done, imgUrl, scheduleId }) => {
+  const appContext = useContext(AppContext);
+  const navigate = useNavigate();
   const [_done, setDone] = useState<boolean>(Boolean(done));
-  const [loadedImg, setLoadedImg] = useState<string>('');
 
+  let endpointPrefix = '';
+  if (parent === PANEL_DAY) {
+    endpointPrefix = 'day';
+  } else if (parent === PANEL_LESSON) {
+    endpointPrefix = 'lesson';
+  }
 
-  const clickHandler = () => {
+  const setDoneHandler = () => {
     setDone(!_done);
+    const { cards } = appContext.getPanelData(parent);
+    const currentCard = cards.find((card: CardModel) => card.id === cardId);
+    currentCard.done = !_done;
+    (async () => {
+      const formdata = new FormData();
+      formdata.append('card', JSON.stringify({ 'done': !_done }));
+      const updatedCard = await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}`, formdata, ContentType.FORM);
+    })();
   };
 
-  const uploadFileHandler = async (event: any) => {
-    event.preventDefault();
+  const onLongPress = () => {
+    navigate(`card/${cardId}`);
+  };
 
-    const file = event.target.files[0];
+  const longPressEvent = useLongPress(
+    onLongPress,
+    () => {},
+    {
+      shouldPreventDefault: true,
+      delay: 500,
+    });
 
-    const formdata = new FormData();
-    formdata.append('image', file);
-    // В result будет полная информация о карточке, а она нам нужна? Мб просто успешно изменение или нет
-    const result = await apiRequest.post('cards', formdata, ContentType.FORM);
-
-    const ext = file.name
-      .substring(file.name.lastIndexOf('.') + 1)
-      .toLowerCase();
-
-    if (['gif', 'png', 'jpeg', 'jpg', 'webp'].includes(ext)) {
-      const reader = new FileReader();
-      reader.addEventListener('load', (e) => {
-        e.preventDefault();
-        if (typeof e?.target?.result === 'string') {
-          setLoadedImg(e.target.result);
-        }
-      });
-      reader.readAsDataURL(file);
-    }
+  const createNewHandler = () => {
+    navigate('new');
   };
 
   return(
-    <div className={styles.card} onClick={clickHandler}>
-      {!imgUrl && !loadedImg && <form className="cardForm">
-        <input onChange={uploadFileHandler}
-          type='file'
-          name='file'
-          id='file'
-          accept='image/png, image/jpeg, image/webp'
-          className={styles.cardFormFile}
-        />
-        <label htmlFor='file' className={styles.cardInner}>+</label>
-      </form>}
-      {!imgUrl && loadedImg &&
-          <div className={styles.cardInner}>
-            <img src={loadedImg} />
-          </div>
+    <div className={styles.card}>
+      {!imgUrl &&
+        <div onClick={createNewHandler} className={styles.cardInner}>+</div>
       }
       {imgUrl && !_done &&
-          <div className={styles.cardInner}>
-            <img src={imgUrl} />
+          <div className={styles.cardInner} onClick={setDoneHandler} {...longPressEvent}>
+            <img src={imgUrl}/>
           </div>
       }
       {imgUrl && _done &&
-          <div className={`${styles.cardInner} ${styles.transparent}`}>
+          <div className={`${styles.cardInner} ${styles.transparent}`} onClick={setDoneHandler} {...longPressEvent}>
             <img src={imgUrl}/>
           </div>
       }

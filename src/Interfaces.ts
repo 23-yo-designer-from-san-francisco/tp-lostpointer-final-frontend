@@ -3,6 +3,7 @@ export interface CardModel {
     name?: string;
     done?: boolean;
     imgUrl?: string;
+    schedule_id?: number;
 }
 
 export interface ApiRequestParams {

@@ -3,3 +3,12 @@
     flex-direction: column;
     align-items: center;
 }
+
+.timer {
+    position: absolute;
+}
+
+.timerHidden {
+    position: absolute;
+    display: none;
+}

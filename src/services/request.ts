@@ -84,7 +84,7 @@ export class Request {
   ): Promise<any> {
     const myHeaders = new Headers();
     const { POST, PUT, DELETE, PATCH } = RequestMethods;
-    if (requestBody && contentType !== ContentType.FORM && [POST, PUT, DELETE, PATCH].includes(requestMethod)) {
+    if (requestBody && contentType !== ContentType.FORM && [POST, PUT, DELETE, PATCH].includes(<RequestMethods>requestMethod)) {
       myHeaders.append('Content-Type', contentType);
     }
     if (customHeaders) {
