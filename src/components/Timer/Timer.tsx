@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 
 import styles from './Timer.module.css';
-import { Button } from 'react-bootstrap';
-import { PauseBtn, PlayBtn, StopBtn } from 'react-bootstrap-icons';
+import { Button, Table } from 'react-bootstrap';
+import { Pause, Play, Stop } from 'react-bootstrap-icons';
 
 export interface TimerProps {
   id: string;
@@ -42,21 +42,31 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
     setKey(key + 1);
   };
 
+  const startTimer = (e: any) => {
+    const stringTime = e.currentTarget.innerHTML;
+    const seconds = stringTime.split(':').reduce((res: number, time: string) => {
+      return res * 60 + parseInt(time);
+    }, 0);
+    setDuration(seconds);
+    setIsPlaying(true);
+    setIsPaused(false);
+    setKey(key+1);
+  };
+
   return(
     <div id={id}>
       <div className={styles.timerContainer}>
-        <div className={styles.presets}>
-          <div className={styles.preset}>0:30</div>
-          <div className={styles.preset}>0:30</div>
-          <div className={styles.preset}>0:30</div>
-          <div className={styles.preset}>0:30</div>
-          <div className={styles.preset}>0:30</div>
-          <div className={styles.preset}>0:30</div>
-          <div className={styles.preset}>0:30</div>
-          <div className={styles.preset}>0:30</div>
-          <div className={styles.preset}>0:30</div>
-          <div className={styles.preset}>0:30</div>
-        </div>
+        <Table size="30" className={styles.table} striped bordered hover>
+          <thead>
+            <tr>Часто используемые</tr>
+          </thead>
+          <tbody>
+            {
+              ['0:30', '1:25', '2:30', '15:34']
+                .map((time, i) => <tr key={i} onClick={startTimer} className={styles.preset}>{time}</tr>)
+            }
+          </tbody>
+        </Table>
         <CountdownCircleTimer
           key={key}
           isPlaying={isPlaying}
@@ -64,10 +74,7 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
           colors={['#004777', '#F7B801', '#A30000', '#A30000']}
           colorsTime={[7, 5, 2, 0]}
         >
-          {({ remainingTime }) => {
-            // appContext.updatePanel(id, { remainingTime });
-            return remainingTime;
-          }}
+          {({ remainingTime }) => remainingTime}
         </CountdownCircleTimer>
         <form className={styles.setTimeForm}>
           <input
@@ -75,14 +82,14 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
             min={0}
             onChange={(e) => setUserDefinedDuration(parseInt(e.currentTarget.value))}
           />
-          <Button onClick={playClicked}>
-            <PlayBtn/>
+          <Button variant="success" className={styles.button} onClick={playClicked}>
+            <Play/>
           </Button>
-          <Button onClick={pauseClicked}>
-            <PauseBtn/>
+          <Button className={styles.button} onClick={pauseClicked}>
+            <Pause/>
           </Button>
-          <Button onClick={stopClicked}>
-            <StopBtn/>
+          <Button variant="danger" className={styles.button} onClick={stopClicked}>
+            <Stop/>
           </Button>
         </form>
       </div>

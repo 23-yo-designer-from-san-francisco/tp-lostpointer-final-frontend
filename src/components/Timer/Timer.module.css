@@ -1,5 +1,5 @@
 .timerContainer {
-    width: 30vw;
+    width: 50vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -14,4 +14,15 @@
 .presets {
     display: flex;
     flex-direction: column;
+}
+
+.button {
+    width: 40px;
+    height: 40px;
+    margin: 12px 0 12px;
+    /*border: 5px;*/
+}
+
+.table {
+    width: 30px;
 }
