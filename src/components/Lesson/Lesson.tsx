@@ -1,13 +1,13 @@
 import React from 'react';
 import { CardList } from '../CardList/CardList';
-import { DEFAULT_SCHEDULE_ID, LESSON_CARD_LIST } from '../../pages';
+import { DEFAULT_SCHEDULE_ID, LESSON_CARD_LIST, Panel } from '../../pages';
 import { CardModel } from '../../Interfaces';
 import { useParams } from 'react-router-dom';
 
 import './Lesson.css';
 
 export interface LessonProps {
-    id: string;
+    id: Panel;
     cards: CardModel[];
 }
 

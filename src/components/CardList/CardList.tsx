@@ -4,11 +4,12 @@ import { AppContext } from '../../AppContext';
 import { CardModel } from '../../Interfaces';
 
 import styles from './CardList.module.css';
+import { List, Panel } from '../../pages';
 
 export interface CardListProps {
-    id: string;
+    id: List;
     scheduleId?: number;
-    parent: string;
+    parent: Panel;
     cards: CardModel[];
 }
 

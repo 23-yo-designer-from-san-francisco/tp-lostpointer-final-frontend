@@ -3,13 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { apiRequest } from '../../services/request';
 import { ContentType } from '../../services/requestUtils';
 import { AppContext } from '../../AppContext';
-import { PANEL_DAY, PANEL_LESSON } from '../../pages';
+import { Panel, PANEL_DAY, PANEL_LESSON } from '../../pages';
 import { CardModel } from '../../Interfaces';
 
 import styles from './EditCard.module.css';
 
 export interface EditCardProps {
-  id: string;
+  id: Panel;
 }
 
 const EditCard: React.FC<EditCardProps> = ({ id }) => {

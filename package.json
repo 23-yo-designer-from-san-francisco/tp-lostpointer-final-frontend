@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/howler": "^2.2.7",
     "bootstrap": "^5.2.2",
     "bootstrap-icons-react": "^1.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
