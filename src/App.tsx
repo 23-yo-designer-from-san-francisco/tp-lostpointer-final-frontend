@@ -60,8 +60,8 @@ export const App: React.FC = () => {
       const lessonCards = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
       setState({
         ...state,
-        [PANEL_DAY]: { cards: dayCards?.cards || [] },
-        [PANEL_LESSON]: { cards: lessonCards?.cards || [] },
+        [PANEL_DAY]: { cards: dayCards?.cards },
+        [PANEL_LESSON]: { cards: lessonCards?.cards },
         loaded: true
       });
     })();

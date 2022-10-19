@@ -36,3 +36,8 @@ display: flex;
 .table {
     width: 30px!important;
 }
+
+.td {
+    display: flex;
+    justify-content: center;
+}

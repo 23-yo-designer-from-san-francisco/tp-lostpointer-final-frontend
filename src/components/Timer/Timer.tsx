@@ -24,8 +24,7 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
   const [duration, setDuration] = useState<number>(remainingTime);
   const [key, setKey] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [paused, setIsPaused] = useState<boolean>(false);
-  // const [playSound, exposedData] = useSound('../../../assets/tick.opus');
+  const [isPaused, setIsIsPaused] = useState<boolean>(false);
   const [tick] = useState(new Howl({
     src: [tickSound],
     loop: true,
@@ -36,12 +35,12 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
   }));
 
   const playClicked = () => {
-    if (userDefinedDuration === 0 || isPlaying) {
+    if (userDefinedDuration === 0 || isPlaying && !isPaused) {
       return;
     }
     tick.play();
-    if (paused) {
-      setIsPaused(false);
+    if (isPaused) {
+      setIsIsPaused(false);
       return setIsPlaying(true);
     }
     setDuration(userDefinedDuration);
@@ -54,25 +53,26 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
   const pauseClicked = () => {
     tick.stop();
     setIsPlaying(false);
-    setIsPaused(true);
+    setIsIsPaused(true);
   };
 
   const stopClicked = () => {
     tick.stop();
     finished.stop();
     setIsPlaying(false);
-    setIsPaused(false);
+    setIsIsPaused(false);
     setDuration(0);
     setKey(key + 1);
   };
 
   const startTimer = (e: any) => {
+    stopClicked();
     const stringTime = e.currentTarget.innerHTML;
     const seconds = stringTime.split(':').reduce((res: number, time: string) => res * 60 + parseInt(time), 0);
     setDuration(seconds);
     tick.play();
     setIsPlaying(true);
-    setIsPaused(false);
+    setIsIsPaused(false);
     setKey(key+1);
   };
 
@@ -86,7 +86,7 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
   return(
     <div id={id}>
       <div className={styles.timerContainer}>
-        <Table className={styles.table} striped bordered hover>
+        <Table className={styles.table} bordered hover>
           <thead>
             <tr><td>Часто используемые</td></tr>
           </thead>
@@ -96,10 +96,9 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
                 .map((time, i) =>
                   <tr
                     key={i}
-                    onClick={startTimer}
                     className={styles.preset}
                   >
-                    <td>
+                    <td className={styles.td} onClick={startTimer}>
                       {time}
                     </td>
                   </tr>
