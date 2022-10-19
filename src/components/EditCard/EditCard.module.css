@@ -19,6 +19,7 @@
 }
 
 .editCardClose {
+    display: inline;
     cursor: pointer;
     height: 30px;
     width: 30px;
@@ -86,10 +87,9 @@
 
 .editCardDelete{
     cursor: pointer;
-    display: flex;
-    height: 30px;
-    width: 30px;
-    padding: 7px 0 7px 110px;
+    display: inline;
+    margin-left: 410px;
+    width: 15px;
 }
 
 .editCardNameInput{

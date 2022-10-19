@@ -57,11 +57,11 @@ export const App: React.FC = () => {
   useEffect(() => {
     (async () => {
       const dayCards = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
-      const lessonCards = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
+      const lessonCards = await apiRequest.get(`schedules/lesson/${DEFAULT_SCHEDULE_ID}/cards`);
       setState({
         ...state,
-        [PANEL_DAY]: { cards: dayCards?.cards || [] },
-        [PANEL_LESSON]: { cards: lessonCards?.cards || [] },
+        [PANEL_DAY]: { cards: dayCards },
+        [PANEL_LESSON]: { cards: lessonCards },
         loaded: true
       });
     })();

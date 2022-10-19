@@ -38,6 +38,7 @@ const EditCard: React.FC<EditCardProps> = ({ id }) => {
 
   const [newName, setName] = useState<string|undefined>(currentName);
   const [newFile, setFile] = useState<File|null>(null);
+  const [deleteConfirmation, setDeleteConfirmationState] = useState<boolean>(false);
 
   const submitEditFormHandler = async (event: any) => {
     event.preventDefault();
@@ -52,9 +53,17 @@ const EditCard: React.FC<EditCardProps> = ({ id }) => {
       if (newName) {
         formdata.append('card', JSON.stringify({ 'name': newName }));
       }
-      const newCard = await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards`, formdata, ContentType.FORM);
-      const { cards } = appContext.getPanelData(id);
-      appContext.updatePanel(id, { cards: [...cards, newCard] });
+      if (cardId) {
+        const { cards } = appContext.getPanelData(id);
+        const currentCard = cards.find((card: CardModel) => String(card.id) === cardId);
+        currentCard.name = currentName;
+        currentCard.imgUrl = loadedImg;
+        await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}`, formdata, ContentType.FORM);
+      } else {
+        const newCard = await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards`, formdata, ContentType.FORM);
+        const { cards } = appContext.getPanelData(id);
+        appContext.updatePanel(id, { cards: [...cards, newCard] });
+      }
       navigate(-1);
     }
   };
@@ -65,6 +74,25 @@ const EditCard: React.FC<EditCardProps> = ({ id }) => {
 
   const uploadNameHandler = (event: any) => {
     setName(event.target.value);
+  };
+
+  const setDeleteConfirmation = () => {
+    setWarning('Нажмите еще раз для удаления!');
+    setDeleteConfirmationState(true);
+  };
+
+  const resetDeleteConfirmation = (event: any) => {
+    if (event.target.className !== styles.editCardDelete) {
+      setWarning('');
+      setDeleteConfirmationState(false);
+    }
+  };
+
+  const deleteCard = async () => {
+    await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}/goodbye`);
+    const { cards } = appContext.getPanelData(id);
+    cards.splice(cards.findIndex((card: CardModel) => String(card.id) === cardId), 1);
+    navigate(-1);
   };
 
   const uploadFileHandler = async (event: any) => {
@@ -93,9 +121,11 @@ const EditCard: React.FC<EditCardProps> = ({ id }) => {
   };
 
   return(
-    <div className={styles.editCard}>
+    <div className={styles.editCard} onClick={resetDeleteConfirmation}>
       <div className={styles.editCardContent}>
         <img alt="Закрыть окно" className={styles.editCardClose} onClick={closeWindowHandler} src="https://lostpointer.tech/images/delete.svg"/>
+        {cardId && !deleteConfirmation && <img alt="Удалить карточку" onClick={setDeleteConfirmation} className={styles.editCardDelete} src="https://lostpointer.tech/images/trash.svg"/>}
+        {cardId && deleteConfirmation && <img alt="Удалить карточку" onClick={deleteCard} className={styles.editCardDelete} src="https://lostpointer.tech/images/trash.svg"/>}
         <div className={styles.editCardContentFlex}>
           <form className={styles.editCardForm} action='#' noValidate>
             <div>
@@ -117,7 +147,6 @@ const EditCard: React.FC<EditCardProps> = ({ id }) => {
                 {cardId && <>Изменить карточку</>}
                 {!cardId && <>Новая карточка</>}
               </div>
-              {id && <img alt="Удалить карточку" className={styles.editCardDelete} src="https://lostpointer.tech/images/trash.svg"/>}
               <input onChange={uploadNameHandler}
                 className={styles.editCardNameInput}
                 type="text"
