@@ -3,31 +3,46 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { apiRequest } from '../../services/request';
 import { ContentType } from '../../services/requestUtils';
 import { AppContext } from '../../AppContext';
-import { PANEL_DAY } from '../../pages';
+import { PANEL_DAY, PANEL_LESSON } from '../../pages';
+import { CardModel } from '../../Interfaces';
 
 import styles from './EditCard.module.css';
 
 export interface EditCardProps {
-    id?: string;
-    name?: string;
-    imgUrl?: string;
+  id: string;
 }
 
-const EditCard: React.FC<EditCardProps> = ({ id, name, imgUrl }) => {
+const EditCard: React.FC<EditCardProps> = ({ id }) => {
   const appContext = useContext(AppContext);
-  const [warning, setWarning] = useState<string>('');
-  const [newName, setName] = useState<string|undefined>(name);
-  const [newFile, setFile] = useState<File|null>(null);
-  const { scheduleId } = useParams();
+  const { scheduleId, cardId } = useParams();
   const navigate = useNavigate();
+
+  const [warning, setWarning] = useState<string>('');
   const [loadedImg, setLoadedImg] = useState<string>('');
+
+  let endpointPrefix = '';
+  if (id === PANEL_DAY) {
+    endpointPrefix = 'day';
+  } else if (id === PANEL_LESSON) {
+    endpointPrefix = 'lesson';
+  }
+
+  let currentName = '';
+  let currentImgUrl = '';
+  if (cardId) {
+    const { cards } = appContext.getPanelData(id);
+    const currentCard = cards.find((card: CardModel) => String(card.id) === cardId);
+    currentName = currentCard.name;
+    currentImgUrl = currentCard.imgUrl;
+  }
+
+  const [newName, setName] = useState<string|undefined>(currentName);
+  const [newFile, setFile] = useState<File|null>(null);
 
   const submitEditFormHandler = async (event: any) => {
     event.preventDefault();
-    if (!loadedImg && newName == name) {
+    if (!newFile && newName == currentName) {
       setWarning('Нужно новое фото или имя!');
-    } else if (!newFile) {
-      setWarning('Нужно новое фото!');
     } else if (!newFile && newName || newFile) {
       setWarning('');
       const formdata = new FormData();
@@ -37,9 +52,9 @@ const EditCard: React.FC<EditCardProps> = ({ id, name, imgUrl }) => {
       if (newName) {
         formdata.append('card', JSON.stringify({ 'name': newName }));
       }
-      const newCard = await apiRequest.post(`schedules/day/${scheduleId}/cards`, formdata, ContentType.FORM);
-      const { cards } = appContext.getPanelData(PANEL_DAY);
-      appContext.updatePanel(PANEL_DAY, { cards: [...cards, newCard] });
+      const newCard = await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards`, formdata, ContentType.FORM);
+      const { cards } = appContext.getPanelData(id);
+      appContext.updatePanel(id, { cards: [...cards, newCard] });
       navigate(-1);
     }
   };
@@ -85,8 +100,8 @@ const EditCard: React.FC<EditCardProps> = ({ id, name, imgUrl }) => {
           <form className={styles.editCardForm} action='#' noValidate>
             <div>
               <div className={styles.editCardImageBlock}>
-                {imgUrl && <img alt='Изображение' className={styles.editCardImageImg} src={imgUrl}/>}
-                {!imgUrl && loadedImg && <img alt='Изображение' className={styles.editCardImageImg} src={loadedImg}/>}
+                {!loadedImg && currentImgUrl && <img alt='Изображение' className={styles.editCardImageImg} src={currentImgUrl}/>}
+                {loadedImg && <img alt='Изображение' className={styles.editCardImageImg} src={loadedImg}/>}
               </div>
               <input onChange={uploadFileHandler}
                 type='file'
@@ -99,8 +114,8 @@ const EditCard: React.FC<EditCardProps> = ({ id, name, imgUrl }) => {
             </div>
             <div>
               <div className={styles.editCardFormTitle}>
-                {id && <>Изменить карточку</>}
-                {!id && <>Новая карточка</>}
+                {cardId && <>Изменить карточку</>}
+                {!cardId && <>Новая карточка</>}
               </div>
               {id && <img alt="Удалить карточку" className={styles.editCardDelete} src="https://lostpointer.tech/images/trash.svg"/>}
               <input onChange={uploadNameHandler}
@@ -108,7 +123,7 @@ const EditCard: React.FC<EditCardProps> = ({ id, name, imgUrl }) => {
                 type="text"
                 name="name"
                 placeholder="Имя карточки"
-                value={name}
+                value={newName}
               />
               <div className={styles.editCardFormButtons}>
                 <input onClick={submitEditFormHandler}

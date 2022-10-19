@@ -7,7 +7,7 @@ import styles from './CardList.module.css';
 
 export interface CardListProps {
     id: string;
-    scheduleId?: string;
+    scheduleId?: number;
     parent: string;
     cards: CardModel[];
 }
@@ -17,17 +17,19 @@ const CardList: React.FC<CardListProps> = ({ id, scheduleId, parent,  cards = []
   const listRef = useRef<any>();
 
   const addCardHandler = () => {
-    appContext.updatePanel(parent, { cards: cards.concat({ done: false, imgUrl: '', scheduleId: scheduleId }) });
+    appContext.updatePanel(parent, { cards: cards.concat({ done: false, imgUrl: '', schedule_id: scheduleId }) });
     listRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'end' });
   };
 
   const renderedCards = useMemo(() => {
-    return cards.map(({ done, imgUrl, scheduleId }, i) =>
+    return cards.map(({ id, done, imgUrl, schedule_id }, i) =>
       <li key={i}>
         <Card
+          parent={parent}
+          cardId={id}
           done={done}
           imgUrl={imgUrl}
-          scheduleId={scheduleId}
+          scheduleId={schedule_id}
         />
       </li>
     );
