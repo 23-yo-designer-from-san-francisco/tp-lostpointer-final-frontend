@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useLongPress from '../../useLongPress';
-import { PANEL_DAY, PANEL_LESSON } from '../../pages';
+import { Panel, PANEL_DAY, PANEL_LESSON } from '../../pages';
 import { apiRequest } from '../../services/request';
 import { ContentType } from '../../services/requestUtils';
 import { AppContext } from '../../AppContext';
@@ -10,7 +10,7 @@ import { CardModel } from '../../Interfaces';
 import styles from './Card.module.css';
 
 export interface CardProps {
-  parent: string;
+  parent: Panel;
   done?: boolean;
   cardId?: number;
   imgUrl?: string;

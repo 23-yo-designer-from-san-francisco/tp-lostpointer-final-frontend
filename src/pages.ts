@@ -15,3 +15,7 @@ export declare type Panel =
     'panel-before-after' |
     'panel-timer' |
     'home';
+
+export declare type List =
+    'day-card-list' |
+    'lesson-card-list';

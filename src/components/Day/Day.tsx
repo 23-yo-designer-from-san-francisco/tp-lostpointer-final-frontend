@@ -1,13 +1,13 @@
 import React from 'react';
 import { CardList } from '../CardList/CardList';
-import { DAY_CARD_LIST, DEFAULT_SCHEDULE_ID } from '../../pages';
+import { DAY_CARD_LIST, DEFAULT_SCHEDULE_ID, Panel } from '../../pages';
 import { CardModel } from '../../Interfaces';
 import { useParams } from 'react-router-dom';
 
 import './Day.css';
 
 export interface DayProps {
-    id: string;
+    id: Panel;
     cards: CardModel[];
 }
 
