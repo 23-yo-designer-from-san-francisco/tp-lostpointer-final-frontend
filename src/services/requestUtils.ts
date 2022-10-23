@@ -15,3 +15,7 @@ export enum RequestMethods {
   GET ='GET',
   DELETE = 'DELETE',
 }
+
+export const defaultBackendRootURL = 'https://lostpointer.tech';
+// export const defaultBackendRootUrl = 'http://localhost';
+export const defaultBackendURL = `${defaultBackendRootURL}/api/`;

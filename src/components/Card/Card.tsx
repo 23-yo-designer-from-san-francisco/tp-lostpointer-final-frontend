@@ -13,11 +13,12 @@ export interface CardProps {
   parent: Panel;
   done?: boolean;
   cardId?: number;
+  cardName?: string;
   imgUrl?: string;
   scheduleId?: number;
 }
 
-const Card: React.FC<CardProps> = ({ parent, cardId, done, imgUrl, scheduleId }) => {
+const Card: React.FC<CardProps> = ({ parent, cardId, cardName, done, imgUrl, scheduleId }) => {
   const appContext = useContext(AppContext);
   const navigate = useNavigate();
   const [_done, setDone] = useState<boolean>(Boolean(done));
@@ -57,19 +58,24 @@ const Card: React.FC<CardProps> = ({ parent, cardId, done, imgUrl, scheduleId })
     navigate('new');
   };
 
-  return(<>
-    {!imgUrl && <div onClick={createNewHandler} className={`${styles.card} ${styles.cardEmpty}`}>+</div>}
+  return(<div className={styles.card}>
+    {!imgUrl &&
+        <div onClick={createNewHandler} className={`${styles.cardInner} ${styles.cardInnerEmpty}`}>+</div>
+    }
     {imgUrl && !_done &&
         // @ts-ignore
-        <div onClick={toggleDone} className={styles.card} {...longPressEvent}>
+        <><div onClick={toggleDone} className={styles.cardInner} {...longPressEvent}>
           <img className={styles.cardImg} src={imgUrl}/>
-        </div>}
+        </div>
+        <div className={styles.cardName}>{cardName}</div></>}
     {imgUrl && _done &&
         // @ts-ignore
-        <div onClick={toggleDone} className={`${styles.card} ${styles.transparent}`} {...longPressEvent}>
+        <><div onClick={toggleDone} className={`${styles.cardInner} ${styles.transparent}`} {...longPressEvent}>
           <img className={styles.cardImg} src={imgUrl}/>
-        </div>}
-  </>);
+        </div>
+        <div className={`${styles.cardName} ${styles.transparent}`}>{cardName}</div></>
+    }
+  </div>);
 };
 
 export { Card };

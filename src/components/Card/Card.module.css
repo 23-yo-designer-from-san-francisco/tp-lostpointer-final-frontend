@@ -1,4 +1,4 @@
-.card {
+.cardInner {
     display: flex;
     width: 290px;
     height: 290px;
@@ -7,7 +7,13 @@
     border-radius: 20px;
 }
 
-.cardEmpty {
+.cardName {
+    display: flex;
+    font-size: 20px;
+    justify-content: center;
+}
+
+.cardInnerEmpty {
     font-size: 150px;
     align-items: center;
     justify-content: center;

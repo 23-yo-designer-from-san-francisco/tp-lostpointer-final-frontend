@@ -1,6 +1,4 @@
-import { ContentType, RequestMethods } from './requestUtils';
-
-const defaultBackendDomain = 'https://lostpointer.tech/api/';
+import { ContentType, defaultBackendURL, RequestMethods } from './requestUtils';
 
 export interface IResponseBody {
     status: number;
@@ -10,7 +8,7 @@ export interface IResponseBody {
 export class Request {
   private readonly backendDomain: string;
 
-  constructor(domain: string = defaultBackendDomain) {
+  constructor(domain: string = defaultBackendURL) {
     this.backendDomain = domain;
   }
 

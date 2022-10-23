@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apiRequest } from '../../services/request';
-import { ContentType } from '../../services/requestUtils';
+import { ContentType, defaultBackendRootURL } from '../../services/requestUtils';
 import { AppContext } from '../../AppContext';
 import { Panel, PANEL_DAY, PANEL_LESSON } from '../../pages';
 import { CardModel } from '../../Interfaces';
@@ -56,8 +56,12 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
       if (cardId) {
         const { cards } = appContext.getPanelData(parent);
         const currentCard = cards.find((card: CardModel) => String(card.id) === cardId);
-        currentCard.name = currentName;
-        currentCard.imgUrl = loadedImg;
+        if (newFile) {
+          currentCard.imgUrl = loadedImg;
+        }
+        if (newName) {
+          currentCard.name = newName;
+        }
         await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}`, formdata, ContentType.FORM);
       } else {
         const newCard = await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards`, formdata, ContentType.FORM);
@@ -125,9 +129,9 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
   return(
     <div className={styles.editCard} onClick={resetDeleteConfirmation}>
       <div className={styles.editCardContent}>
-        <img alt="Закрыть окно" className={styles.editCardClose} onClick={closeWindowHandler} src="https://lostpointer.tech/images/delete.svg"/>
-        {cardId && !deleteConfirmation && <img alt="Удалить карточку" onClick={setDeleteConfirmation} className={styles.editCardDelete} src="https://lostpointer.tech/images/trash.svg"/>}
-        {cardId && deleteConfirmation && <img alt="Удалить карточку" onClick={deleteCard} className={styles.editCardDelete} src="https://lostpointer.tech/images/trash.svg"/>}
+        <img alt="Закрыть окно" className={styles.editCardClose} onClick={closeWindowHandler} src={`${defaultBackendRootURL}/images/delete.svg`}/>
+        {cardId && !deleteConfirmation && <img alt="Удалить карточку" onClick={setDeleteConfirmation} className={styles.editCardDelete} src={`${defaultBackendRootURL}/images/trash.svg`}/>}
+        {cardId && deleteConfirmation && <img alt="Удалить карточку" onClick={deleteCard} className={styles.editCardDelete} src={`${defaultBackendRootURL}/images/trash.svg`}/>}
         <div className={styles.editCardContentFlex}>
           <form className={styles.editCardForm} action='#' noValidate>
             <div>
