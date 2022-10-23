@@ -14,11 +14,13 @@ export interface CardProps {
   done?: boolean;
   cardId?: number;
   cardName?: string;
+  startTime?: string;
+  endTime?: string;
   imgUrl?: string;
   scheduleId?: number;
 }
 
-const Card: React.FC<CardProps> = ({ parent, cardId, cardName, done, imgUrl, scheduleId }) => {
+const Card: React.FC<CardProps> = ({ parent, cardId, cardName, startTime, endTime, done, imgUrl, scheduleId }) => {
   const appContext = useContext(AppContext);
   const navigate = useNavigate();
   const [_done, setDone] = useState<boolean>(Boolean(done));
@@ -60,20 +62,27 @@ const Card: React.FC<CardProps> = ({ parent, cardId, cardName, done, imgUrl, sch
 
   return(<div className={styles.card}>
     {!imgUrl &&
-        <div onClick={createNewHandler} className={`${styles.cardInner} ${styles.cardInnerEmpty}`}>+</div>
+        <>
+          <div className={styles.cardTime}></div>
+          <div onClick={createNewHandler} className={`${styles.cardInner} ${styles.cardInnerEmpty}`}>+</div>
+        </>
     }
     {imgUrl && !_done &&
-        // @ts-ignore
-        <><div onClick={toggleDone} className={styles.cardInner} {...longPressEvent}>
-          <img className={styles.cardImg} src={imgUrl}/>
-        </div>
-        <div className={styles.cardName}>{cardName}</div></>}
+        <>
+          <div className={styles.cardTime}>{startTime}{startTime && endTime && <> - {endTime}</>}</div>
+          <div onClick={toggleDone} className={styles.cardInner} {...longPressEvent}>
+            <img className={styles.cardImg} src={imgUrl}/>
+          </div>
+          <div className={styles.cardName}>{cardName}</div>
+        </>}
     {imgUrl && _done &&
-        // @ts-ignore
-        <><div onClick={toggleDone} className={`${styles.cardInner} ${styles.transparent}`} {...longPressEvent}>
-          <img className={styles.cardImg} src={imgUrl}/>
-        </div>
-        <div className={`${styles.cardName} ${styles.transparent}`}>{cardName}</div></>
+        <>
+          <div className={`${styles.cardTime} ${styles.transparent}`}>{startTime}{startTime && endTime && <> - {endTime}</>}</div>
+          <div onClick={toggleDone} className={`${styles.cardInner} ${styles.transparent}`} {...longPressEvent}>
+            <img className={styles.cardImg} src={imgUrl}/>
+          </div>
+          <div className={`${styles.cardName} ${styles.transparent}`}>{cardName}</div>
+        </>
     }
   </div>);
 };

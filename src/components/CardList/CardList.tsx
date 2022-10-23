@@ -23,12 +23,14 @@ const CardList: React.FC<CardListProps> = ({ id, scheduleId, parent,  cards = []
   };
 
   const renderedCards = useMemo(() => {
-    return cards.map(({ id, name, done, imgUrl, schedule_id }, i) =>
+    return cards.map(({ id, name, startTime, endTime, done, imgUrl, schedule_id }, i) =>
       <li key={i}>
         <Card
           parent={parent}
           cardId={id}
           cardName={name}
+          startTime={startTime}
+          endTime={endTime}
           done={done}
           imgUrl={imgUrl}
           scheduleId={schedule_id}

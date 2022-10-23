@@ -1,3 +1,8 @@
+.card {
+    width: 290px;
+    height: 340px;
+}
+
 .cardInner {
     display: flex;
     width: 290px;
@@ -7,7 +12,15 @@
     border-radius: 20px;
 }
 
+.cardTime {
+    height: 20px;
+    display: flex;
+    font-size: 15px;
+    justify-content: center;
+}
+
 .cardName {
+    height: 30px;
     display: flex;
     font-size: 20px;
     justify-content: center;
