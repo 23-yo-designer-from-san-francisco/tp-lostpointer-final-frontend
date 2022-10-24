@@ -139,50 +139,93 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
 
   return(
     <div className={styles.editCard} onClick={resetDeleteConfirmation}>
-      <div className={styles.editCardContent}>
-        <img alt="Закрыть окно" className={styles.editCardClose} onClick={closeWindowHandler} src={`${defaultBackendRootURL}/images/delete.svg`}/>
-        {cardId && !deleteConfirmation && <img alt="Удалить карточку" onClick={setDeleteConfirmation} className={styles.editCardDelete} src={`${defaultBackendRootURL}/images/trash.svg`}/>}
-        {cardId && deleteConfirmation && <img alt="Удалить карточку" onClick={deleteCard} className={styles.editCardDelete} src={`${defaultBackendRootURL}/images/trash.svg`}/>}
-        <div className={styles.editCardContentFlex}>
-          <form className={styles.editCardForm} action='#' noValidate>
-            <div>
-              <div className={styles.editCardImageBlock}>
-                {!loadedImg && currentImgUrl && <img alt='Изображение' className={styles.editCardImageImg} src={currentImgUrl}/>}
-                {loadedImg && <img alt='Изображение' className={styles.editCardImageImg} src={loadedImg}/>}
+      <form className={styles.editCardForm} action='#' noValidate>
+        <div className={styles.editCardContent}>
+          <div className={styles.editCardIcons}>
+            <img alt="Закрыть окно" className={styles.editCardClose} onClick={closeWindowHandler} src={`${defaultBackendRootURL}/images/delete.svg`}/>
+            {cardId && !deleteConfirmation && <img alt="Удалить карточку" onClick={setDeleteConfirmation} className={styles.editCardDelete} src={`${defaultBackendRootURL}/images/trash.svg`}/>}
+            {cardId && deleteConfirmation && <img alt="Удалить карточку" onClick={deleteCard} className={styles.editCardDelete} src={`${defaultBackendRootURL}/images/trash.svg`}/>}
+          </div>
+          <div className={styles.editCardFormTitle}>
+            {cardId && <>Изменить карточку</>}
+            {!cardId && <>Новая карточка</>}
+          </div>
+          <ul className={styles.editCardLine}>
+            <li>
+              <div className={styles.editCardLineItem}>
+                <div className={styles.editCardLineItemInner}>
+                  {!loadedImg && currentImgUrl && <img alt='Изображение' className={styles.editCardLineItemImg} src={currentImgUrl}/>}
+                  {loadedImg && <img alt='Изображение' className={styles.editCardLineItemImg} src={loadedImg}/>}
+                </div>
+                <div className={styles.editCardLineItemIconName}>Текущее изображение</div>
               </div>
-              <input onChange={uploadFileHandler}
-                type='file'
-                name='file'
-                id='file'
-                accept='image/png, image/jpg, image/webp'
-                className={styles.editCardImageInput}
-              />
-              <label htmlFor='file' className={styles.editCardImageInputBtn}>Upload file</label>
-            </div>
-            <div>
-              <div className={styles.editCardFormTitle}>
-                {cardId && <>Изменить карточку</>}
-                {!cardId && <>Новая карточка</>}
-              </div>
-              <input onChange={uploadNameHandler}
-                className={styles.editCardNameInput}
-                type="text"
-                name="name"
-                placeholder="Имя карточки"
-                value={newName}
-              />
-              <div className={styles.editCardFormButtons}>
-                <input onClick={submitEditFormHandler}
-                  className={styles.editCardFormSubmit}
-                  type='submit'
-                  value="Сохранить"
+            </li>
+            <li>
+              <div className={styles.editCardLineItem}>
+                <input onChange={uploadFileHandler}
+                  type='file'
+                  name='file'
+                  id='file'
+                  accept='image/png, image/jpg, image/webp'
+                  className={styles.editCardImageInput}
                 />
+                <label htmlFor='file'>
+                  <div className={styles.editCardLineItemInner}>
+                    <img alt='Загрузить с устройства' className={styles.editCardLineItemIcon} src={`${defaultBackendRootURL}/images/photo.svg`}/>
+                  </div>
+                  <div className={styles.editCardLineItemIconName}>Загрузить с устройства</div>
+                </label>
               </div>
-              <div className={styles.editCardFormMsg}>{warning}</div>
-            </div>
-          </form>
+            </li>
+            <li>
+              <div className={styles.editCardLineItem}>
+                <div className={styles.editCardLineItemInner}>
+                  <img alt='Выбрать из стоковых' className={styles.editCardLineItemIcon} src={`${defaultBackendRootURL}/images/gallery.svg`}/>
+                </div>
+                <div className={styles.editCardLineItemIconName}>Выбрать из стоковых</div>
+              </div>
+            </li>
+          </ul>
+          <div className={styles.editCardInputsBlock}>
+            <input onChange={uploadNameHandler}
+              className={styles.editCardInput}
+              type="text"
+              name="name"
+              placeholder="Имя карточки"
+              value={newName}
+            />
+            { parent === PANEL_DAY && <>
+              <label className={styles.editCardLabel} htmlFor="startTime">Начало:</label>
+              <input
+                className={styles.editCardInput}
+                type="time"
+                name="startTime"
+                id="startTime"
+                placeholder="Время начала"
+                value=""
+              />
+              <label className={styles.editCardLabel} htmlFor="startTime">Конец:</label>
+              <input
+                className={styles.editCardInput}
+                type="time"
+                name="endTime"
+                id="endTime"
+                placeholder="Время окончания"
+                value=""
+              />
+            </>}
+          </div>
+
+          <div className={styles.editCardFormButtons}>
+            <input onClick={submitEditFormHandler}
+              className={styles.editCardFormSubmit}
+              type='submit'
+              value="Сохранить"
+            />
+          </div>
+          <div className={styles.editCardFormMsg}>{warning}</div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
