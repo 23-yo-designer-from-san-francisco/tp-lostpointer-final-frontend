@@ -29,32 +29,51 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
 
   let currentName = '';
   let currentImgUrl = '';
+  let currentStartTime = '';
+  let currentEndTime = '';
   if (cardId) {
     const { cards } = appContext.getPanelData(parent);
     const currentCard = cards.find((card: CardModel) => String(card.id) === cardId);
     if (currentCard) {
       currentName = currentCard.name;
       currentImgUrl = currentCard.imgUrl;
+      currentStartTime = currentCard.startTime;
+      currentEndTime = currentCard.endTime;
     }
   }
 
   const [newName, setName] = useState<string|undefined>(currentName);
+  const [newStartTime, setStartTime] = useState<string|undefined>(currentStartTime);
+  const [newEndTime, setEndTime] = useState<string|undefined>(currentEndTime);
   const [newFile, setFile] = useState<File|null>(null);
   const [deleteConfirmation, setDeleteConfirmationState] = useState<boolean>(false);
 
   const submitEditFormHandler = async (event: any) => {
     event.preventDefault();
-    if (!newFile && newName == currentName) {
-      setWarning('Нужно новое фото или имя!');
-    } else if (!newFile && newName || newFile) {
+    if (!newFile && newName === currentName && newStartTime === currentStartTime && newEndTime === currentEndTime) {
+      setWarning('Нужно ввести новые значения!');
+    } else {
       setWarning('');
       const formdata = new FormData();
+      // формируем объект для тела запроса
+      const newCardJson: CardModel = {};
       if (newFile) {
         formdata.append('image', newFile);
       }
-      if (newName) {
-        formdata.append('card', JSON.stringify({ 'name': newName }));
+      if (newName !== currentName) {
+        newCardJson.name = newName;
       }
+      if (newStartTime !== currentStartTime) {
+        newCardJson.startTime = newStartTime;
+        if (newEndTime !== currentEndTime) {
+          newCardJson.endTime = newEndTime;
+        }
+      }
+      // помещаем объект в formdata
+      if (newCardJson) {
+        formdata.append('card', JSON.stringify(newCardJson));
+      }
+      // если редактируем карточку
       if (cardId) {
         const { cards } = appContext.getPanelData(parent);
         const currentCard = cards.find((card: CardModel) => String(card.id) === cardId);
@@ -62,11 +81,18 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
           if (newFile) {
             currentCard.imgUrl = loadedImg;
           }
-          if (newName) {
+          if (newName !== currentName) {
             currentCard.name = newName;
+          }
+          if (newStartTime !== currentStartTime) {
+            currentCard.startTime = newStartTime;
+          }
+          if (newStartTime && newEndTime !== currentEndTime) {
+            currentCard.endTime = newEndTime;
           }
         }
         await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}`, formdata, ContentType.FORM);
+      // если создаем новую карточку
       } else {
         const newCard = await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards`, formdata, ContentType.FORM);
         const { cards } = appContext.getPanelData(parent);
@@ -84,6 +110,14 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
 
   const uploadNameHandler = (event: any) => {
     setName(event.target.value);
+  };
+
+  const uploadStartTimeHandler = (event: any) => {
+    setStartTime(event.target.value);
+  };
+
+  const uploadEndTimeHandler = (event: any) => {
+    setEndTime(event.target.value);
   };
 
   const setDeleteConfirmation = () => {
@@ -196,22 +230,22 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
             />
             { parent === PANEL_DAY && <>
               <label className={styles.editCardLabel} htmlFor="startTime">Начало:</label>
-              <input
+              <input onChange={uploadStartTimeHandler}
                 className={styles.editCardInput}
                 type="time"
                 name="startTime"
                 id="startTime"
                 placeholder="Время начала"
-                value=""
+                value={newStartTime}
               />
               <label className={styles.editCardLabel} htmlFor="startTime">Конец:</label>
-              <input
+              <input onChange={uploadEndTimeHandler}
                 className={styles.editCardInput}
                 type="time"
                 name="endTime"
                 id="endTime"
                 placeholder="Время окончания"
-                value=""
+                value={newEndTime}
               />
             </>}
           </div>

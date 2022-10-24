@@ -5,7 +5,7 @@ export interface CardModel {
     endTime?: string;
     done?: boolean;
     imgUrl?: string;
-    orderPlace: number;
+    orderPlace?: number;
     schedule_id?: number;
 }
 

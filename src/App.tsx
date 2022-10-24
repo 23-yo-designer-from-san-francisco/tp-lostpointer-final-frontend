@@ -55,6 +55,9 @@ export const App: React.FC = () => {
   });
 
   const sortCards = (card1: CardModel, card2: CardModel) => {
+    if (!card1.orderPlace || !card2.orderPlace) {
+      return 0;
+    }
     if (card1.orderPlace < card2.orderPlace) {
       return -1;
     }
