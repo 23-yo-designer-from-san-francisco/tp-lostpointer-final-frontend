@@ -32,8 +32,10 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
   if (cardId) {
     const { cards } = appContext.getPanelData(parent);
     const currentCard = cards.find((card: CardModel) => String(card.id) === cardId);
-    currentName = currentCard.name;
-    currentImgUrl = currentCard.imgUrl;
+    if (currentCard) {
+      currentName = currentCard.name;
+      currentImgUrl = currentCard.imgUrl;
+    }
   }
 
   const [newName, setName] = useState<string|undefined>(currentName);
@@ -56,11 +58,13 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
       if (cardId) {
         const { cards } = appContext.getPanelData(parent);
         const currentCard = cards.find((card: CardModel) => String(card.id) === cardId);
-        if (newFile) {
-          currentCard.imgUrl = loadedImg;
-        }
-        if (newName) {
-          currentCard.name = newName;
+        if (currentCard) {
+          if (newFile) {
+            currentCard.imgUrl = loadedImg;
+          }
+          if (newName) {
+            currentCard.name = newName;
+          }
         }
         await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}`, formdata, ContentType.FORM);
       } else {
@@ -97,7 +101,14 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
   const deleteCard = async () => {
     await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}/goodbye`);
     const { cards } = appContext.getPanelData(parent);
-    cards.splice(cards.findIndex((card: CardModel) => String(card.id) === cardId), 1);
+    // не уменьшаем количество карточкек на главном экране меньше 3-х
+    if (cards.length <= 3) {
+      const index = cards.findIndex((card: CardModel) => String(card.id) === cardId);
+      cards[index] = { orderPlace: index, schedule_id: parseInt(String(scheduleId)) };
+    } else {
+      cards.splice(cards.findIndex((card: CardModel) => String(card.id) === cardId), 1);
+    }
+    appContext.updatePanel(parent, { cards: cards });
     navigate(-1);
   };
 

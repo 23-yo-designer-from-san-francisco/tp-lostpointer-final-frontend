@@ -68,6 +68,13 @@ export const App: React.FC = () => {
     (async () => {
       const dayCards: CardModel[] = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
       const lessonCards: CardModel[] = await apiRequest.get(`schedules/lesson/${DEFAULT_SCHEDULE_ID}/cards`);
+      // добавляем пустые карточки, чтобы они в начале отображались
+      while (dayCards.length < 3) {
+        dayCards.push({ orderPlace: dayCards.length, schedule_id: DEFAULT_SCHEDULE_ID });
+      }
+      while (lessonCards.length < 3) {
+        lessonCards.push({ orderPlace: lessonCards.length, schedule_id: DEFAULT_SCHEDULE_ID });
+      }
       setState({
         ...state,
         [PANEL_DAY]: { cards: dayCards.sort(sortCards) },

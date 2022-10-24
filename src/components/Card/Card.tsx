@@ -64,7 +64,7 @@ const Card: React.FC<CardProps> = ({ parent, cardId, cardName, startTime, endTim
     {!imgUrl &&
         <>
           <div className={styles.cardTime}></div>
-          <div onClick={createNewHandler} className={`${styles.cardInner} ${styles.cardInnerEmpty}`}>+</div>
+          <div onClick={createNewHandler} className={`${styles.cardInner} ${styles.cardInnerEmpty}`}>⊕</div>
         </>
     }
     {imgUrl && !_done &&
