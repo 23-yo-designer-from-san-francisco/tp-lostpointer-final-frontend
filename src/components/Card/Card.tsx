@@ -39,8 +39,22 @@ const Card: React.FC<CardProps> = ({ parent, cardId, cardName, startTime, endTim
     currentCard.done = !_done;
     (async () => {
       const formdata = new FormData();
-      formdata.append('card', JSON.stringify({ 'done': !_done }));
-      await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}`, formdata, ContentType.FORM);
+      formdata.append(
+        'card',
+        JSON.stringify(
+          {
+            'done': !_done,
+            'name': currentCard.name,
+            'startTime': currentCard.startTime,
+            'endTime': currentCard.endTime
+          }
+        )
+      );
+      await apiRequest.post(
+        `schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}`,
+        formdata,
+        ContentType.FORM
+      );
     })();
   };
 
