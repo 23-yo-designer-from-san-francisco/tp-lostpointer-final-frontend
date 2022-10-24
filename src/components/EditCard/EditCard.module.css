@@ -16,7 +16,6 @@
     padding: 20px 20px 30px;
     border-radius: 20px;
     width: 80%;
-    height: 80%;
 }
 
 .editCardIcons {
@@ -146,8 +145,7 @@
 }
 
 .editCardFormSubmit{
-    margin-left: auto;
-    margin-right: auto;
+    margin: 15px auto 0;
     height: 45px;
     border: 1px solid #3d3d3d;
     border-radius: 10px;
