@@ -84,6 +84,7 @@ const Card: React.FC<CardProps> = ({ parent, cardId, cardName, startTime, endTim
     {imgUrl && !_done &&
         <>
           <div className={styles.cardTime}>{startTime}{startTime && endTime && <> - {endTime}</>}</div>
+          {/* @ts-ignore */}
           <div onClick={toggleDone} className={styles.cardInner} {...longPressEvent}>
             <img className={styles.cardImg} src={imgUrl}/>
           </div>
@@ -92,6 +93,7 @@ const Card: React.FC<CardProps> = ({ parent, cardId, cardName, startTime, endTim
     {imgUrl && _done &&
         <>
           <div className={`${styles.cardTime} ${styles.transparent}`}>{startTime}{startTime && endTime && <> - {endTime}</>}</div>
+          {/* @ts-ignore */}
           <div onClick={toggleDone} className={`${styles.cardInner} ${styles.transparent}`} {...longPressEvent}>
             <img className={styles.cardImg} src={imgUrl}/>
           </div>
