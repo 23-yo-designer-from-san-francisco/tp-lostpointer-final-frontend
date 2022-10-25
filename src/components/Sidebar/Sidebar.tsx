@@ -32,7 +32,7 @@ const SidebarNav = styled.nav`
   justify-content: center;
   position: fixed;
   top: 0;
-  left: ${({ sidebar }) => (sidebar ? '0' : '-100%')};
+  left: ${( sidebar: SidebarProps ) => (sidebar.sidebar ? '0' : '-100%')};
   transition: 350ms;
   z-index: 10;
 `;
@@ -42,7 +42,8 @@ const SidebarWrap = styled.div`
 `;
 
 export interface SidebarProps {
-  schedules: any;
+  schedules?: any;
+  sidebar?: boolean;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ schedules }) => {
