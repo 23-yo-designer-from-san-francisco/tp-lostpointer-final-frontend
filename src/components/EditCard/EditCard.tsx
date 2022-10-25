@@ -5,9 +5,9 @@ import { ContentType, defaultBackendRootURL } from '../../services/requestUtils'
 import { AppContext } from '../../AppContext';
 import { Panel, PANEL_DAY, PANEL_LESSON } from '../../pages';
 import { CardModel } from '../../Interfaces';
-import { makeid } from './utils';
+import { makeid } from '../../utils';
 
-import styles from './EditCard.module.css';x;
+import styles from './EditCard.module.css';
 
 export interface EditCardProps {
   parent: Panel;
