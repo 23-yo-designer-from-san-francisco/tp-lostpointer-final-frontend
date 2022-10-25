@@ -1,9 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useLongPress from '../../useLongPress';
 import { Panel, PANEL_DAY, PANEL_LESSON } from '../../pages';
 import { apiRequest } from '../../services/request';
-import { ContentType } from '../../services/requestUtils';
+import { ContentType, defaultBackendRootURL } from '../../services/requestUtils';
 import { AppContext } from '../../AppContext';
 import { CardModel } from '../../Interfaces';
 
@@ -58,17 +57,17 @@ const Card: React.FC<CardProps> = ({ parent, cardId, cardName, startTime, endTim
     })();
   };
 
-  const onLongPress = () => {
+  const editCard = () => {
     navigate(`card/${cardId}`);
   };
 
-  const longPressEvent = useLongPress(
-    onLongPress,
-    () => {},
-    {
-      shouldPreventDefault: true,
-      delay: 500,
-    });
+  // const longPressEvent = useLongPress(
+  //   onLongPress,
+  //   () => {},
+  //   {
+  //     shouldPreventDefault: true,
+  //     delay: 500,
+  //   });
 
   const createNewHandler = () => {
     navigate('new');
@@ -84,18 +83,22 @@ const Card: React.FC<CardProps> = ({ parent, cardId, cardName, startTime, endTim
     {imgUrl && !_done &&
         <>
           <div className={styles.cardTime}>{startTime}{startTime && endTime && <> - {endTime}</>}</div>
-          {/* @ts-ignore */}
-          <div onClick={toggleDone} className={styles.cardInner} {...longPressEvent}>
-            <img className={styles.cardImg} src={imgUrl}/>
+          <div onClick={toggleDone} className={styles.cardInner}>
+            <img alt={cardName} className={styles.cardImg} src={imgUrl}/>
+            <div onClick={editCard} className={styles.cardEditIcon}>
+              <img alt='Изменить' src={`${defaultBackendRootURL}/images/pencil.svg`}/>
+            </div>
           </div>
           <div className={styles.cardName}>{cardName}</div>
         </>}
     {imgUrl && _done &&
         <>
           <div className={`${styles.cardTime} ${styles.transparent}`}>{startTime}{startTime && endTime && <> - {endTime}</>}</div>
-          {/* @ts-ignore */}
-          <div onClick={toggleDone} className={`${styles.cardInner} ${styles.transparent}`} {...longPressEvent}>
-            <img className={styles.cardImg} src={imgUrl}/>
+          <div onClick={toggleDone} className={`${styles.cardInner} ${styles.transparent}`}>
+            <img alt={cardName} className={styles.cardImg} src={imgUrl}/>
+            <div onClick={editCard} className={styles.cardEditIcon}>
+              <img alt='Изменить' src={`${defaultBackendRootURL}/images/pencil.svg`}/>
+            </div>
           </div>
           <div className={`${styles.cardName} ${styles.transparent}`}>{cardName}</div>
         </>

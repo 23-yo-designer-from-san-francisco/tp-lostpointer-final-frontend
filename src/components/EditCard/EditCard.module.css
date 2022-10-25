@@ -15,7 +15,7 @@
     margin: 5% auto;
     padding: 20px 20px 30px;
     border-radius: 20px;
-    width: 80%;
+    width: 60%;
 }
 
 .editCardIcons {
@@ -26,7 +26,7 @@
 .editCardLine {
     padding: 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .editCardLine > li {
