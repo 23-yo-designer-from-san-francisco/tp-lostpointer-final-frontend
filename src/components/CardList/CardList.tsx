@@ -1,4 +1,5 @@
 import React, { useContext, useRef } from 'react';
+// @ts-ignore
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Card } from '../Card/Card';
 import { AppContext } from '../../AppContext';
@@ -24,6 +25,7 @@ const CardList: React.FC<CardListProps> = ({ id, scheduleId, parent,  cards = []
   };
 
   // Function to update list on drop
+  // @ts-ignore
   const handleDrop = ( droppedItem ) => {
     // Ignore drop outside droppable container
     if (!droppedItem.destination) return;
@@ -40,6 +42,7 @@ const CardList: React.FC<CardListProps> = ({ id, scheduleId, parent,  cards = []
     <div id={id} className={styles.cardList}>
       <DragDropContext onDragEnd={handleDrop}>
         <Droppable droppableId="list-container" direction="horizontal">
+          {/* @ts-ignore */}
           {(provided) => (
             <div
               className="list-container"
@@ -48,6 +51,7 @@ const CardList: React.FC<CardListProps> = ({ id, scheduleId, parent,  cards = []
             >
               {cards.map((item, index) => (
                 <Draggable key={item.id} draggableId={item.id} index={index}>
+                  {/* @ts-ignore */}
                   {(provided) => (
                     <div
                       className={`${styles.cardItem} item-container`}
