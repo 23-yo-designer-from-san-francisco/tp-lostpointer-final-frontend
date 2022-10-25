@@ -77,14 +77,14 @@ const Card: React.FC<CardProps> = ({ parent, cardId, cardName, startTime, endTim
     {!imgUrl &&
         <>
           <div className={styles.cardTime}></div>
-          <div className={`${styles.cardInner} ${styles.cardInnerEmpty}`}>⊕</div>
+          <div onClick={createNewHandler} className={`${styles.cardInner} ${styles.cardInnerEmpty}`}>⊕</div>
         </>
     }
     {imgUrl && !_done &&
         <>
           <div className={styles.cardTime}>{startTime}{startTime && endTime && <> - {endTime}</>}</div>
-          <div onClick={toggleDone} className={styles.cardInner}>
-            <img alt={cardName} className={styles.cardImg} src={imgUrl}/>
+          <div className={styles.cardInner}>
+            <img onClick={toggleDone} alt={cardName} className={styles.cardImg} src={imgUrl}/>
             <div onClick={editCard} className={styles.cardEditIcon}>
               <img alt='Изменить' src={`${defaultBackendRootURL}/images/pencil.svg`}/>
             </div>
@@ -94,8 +94,8 @@ const Card: React.FC<CardProps> = ({ parent, cardId, cardName, startTime, endTim
     {imgUrl && _done &&
         <>
           <div className={`${styles.cardTime} ${styles.transparent}`}>{startTime}{startTime && endTime && <> - {endTime}</>}</div>
-          <div onClick={toggleDone} className={`${styles.cardInner} ${styles.transparent}`}>
-            <img alt={cardName} className={styles.cardImg} src={imgUrl}/>
+          <div className={`${styles.cardInner} ${styles.transparent}`}>
+            <img onClick={toggleDone} alt={cardName} className={styles.cardImg} src={imgUrl}/>
             <div onClick={editCard} className={styles.cardEditIcon}>
               <img alt='Изменить' src={`${defaultBackendRootURL}/images/pencil.svg`}/>
             </div>
