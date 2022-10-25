@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 import { SidebarData } from './SidebarData';
-import SubMenu from './SubMenu';
+import { SubMenu } from './SubMenu';
 import { IconContext } from 'react-icons/lib';
 
 const Nav = styled.div`
@@ -41,7 +41,11 @@ const SidebarWrap = styled.div`
   width: 100%;
 `;
 
-export const Sidebar = () => {
+export interface SidebarProps {
+  schedules: any;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ schedules }) => {
   const [sidebar, setSidebar] = useState(false);
 
   const showSidebar = () => setSidebar(!sidebar);

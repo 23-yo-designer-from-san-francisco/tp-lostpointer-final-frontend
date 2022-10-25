@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { Star, StarFill } from 'react-bootstrap-icons';
+import styles from './SubMenu.module.css';
 
 const SidebarLink = styled(Link)`
   display: flex;
@@ -46,15 +48,22 @@ export interface SubMenuProps {
 
 const SubMenu: React.FC<SubMenuProps> = ({ item }) => {
   const [subnav, setSubnav] = useState(false);
+  const [starred, setStarred] = useState(false);
 
   const showSubnav = () => setSubnav(!subnav);
+  const starClicked = (e: any) => {
+    e.preventDefault();
+    setStarred(!starred);
+  };
 
   return (
     <>
       <SidebarLink to={item.path} onClick={item.subNav && showSubnav}>
-        <div>
-          {item.icon}
+        <div className={styles.line}>
+          {/*{item.icon}*/}
           <SidebarLabel>{item.title}</SidebarLabel>
+          {!starred && <Star data-star={'off'} onClick={starClicked}/>}
+          {starred && <StarFill data-star={'on'} onClick={starClicked}/>}
         </div>
         <div>
           {item.subNav && subnav
@@ -64,17 +73,18 @@ const SubMenu: React.FC<SubMenuProps> = ({ item }) => {
               : null}
         </div>
       </SidebarLink>
-      {subnav &&
-                item.subNav.map((item, index) => {
-                  return (
-                    <DropdownLink to={item.path} key={index}>
-                      {item.icon}
-                      <SidebarLabel>{item.title}</SidebarLabel>
-                    </DropdownLink>
-                  );
-                })}
+      {/*{subnav && item.subNav.map((item: any, index: number) => {*/}
+      {/*  return (*/}
+      {/*    <DropdownLink to={item.path} key={index}>*/}
+      {/*      {item.icon}*/}
+      {/*      <SidebarLabel>*/}
+      {/*        {item.title}*/}
+      {/*      </SidebarLabel>*/}
+      {/*    </DropdownLink>*/}
+      {/*  );*/}
+      {/*})}*/}
     </>
   );
 };
 
-export default SubMenu;
+export { SubMenu };

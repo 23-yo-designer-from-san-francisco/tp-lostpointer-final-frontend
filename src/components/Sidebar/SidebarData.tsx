@@ -1,32 +1,31 @@
-import React from 'react';
-import * as IoIcons from 'react-icons/io';
-import * as RiIcons from 'react-icons/ri';
-import { Arrow90degDown, Postage } from 'react-bootstrap-icons';
 
 export const SidebarData = [
   {
+    title: 'NEW',
+  },
+  {
     title: 'Overview',
-    path: '/overview',
-    icon: <Postage />,
-    iconClosed: <Arrow90degDown />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
-
-    subNav: [
-      {
-        title: 'Users',
-        path: '/overview/users',
-        icon: <IoIcons.IoIosPaper />
-      },
-      {
-        title: 'Revenue',
-        path: '/overview/revenue',
-        icon: <IoIcons.IoIosPaper />
-      }
-    ]
+    path: '/day/1',
+    // icon: <Postage />,
+    // iconClosed: <Arrow90degDown />,
+    // iconOpened: <RiIcons.RiArrowUpSFill />,
+    // Оставлено на случай если будут подменю
+    // subNav: [
+    //   {
+    //     title: 'Users',
+    //     path: '/overview/users',
+    //     icon: <IoIcons.IoIosPaper />
+    //   },
+    //   {
+    //     title: 'Revenue',
+    //     path: '/overview/revenue',
+    //     icon: <IoIcons.IoIosPaper />
+    //   }
+    // ]
   },
   {
     title: 'Support',
-    path: '/support',
-    icon: <IoIcons.IoMdHelpCircle />
+    path: '/lesson/1',
+    // icon: <IoIcons.IoMdHelpCircle />
   }
 ];

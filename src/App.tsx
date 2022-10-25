@@ -6,13 +6,15 @@ import { Lesson } from './components/Lesson/Lesson';
 import { BeforeAfter } from './components/BeforeAfter/BeforeAfter';
 import { Timer } from './components/Timer/Timer';
 import { Tabbar } from './components/Tabbar/Tabbar';
-import { DEFAULT_SCHEDULE_ID,
+import {
+  DEFAULT_SCHEDULE_ID,
   PANEL_BEFORE_AFTER,
   PANEL_DAY,
   PANEL_HOME,
   PANEL_LESSON,
   PANEL_TIMER,
-  Panel
+  Panel,
+  SCHEDULES_DRAWER
 } from './pages';
 import { AppContext, AppContextProps } from './AppContext';
 import { CardModel } from './Interfaces';
@@ -35,6 +37,9 @@ export interface AppState {
   [PANEL_TIMER]: {
     remainingTime: number,
   },
+  [SCHEDULES_DRAWER]: {
+    schedules: any,
+  }
   loaded: boolean,
 }
 
@@ -51,6 +56,9 @@ export const App: React.FC = () => {
     [PANEL_BEFORE_AFTER]: {},
     [PANEL_TIMER]: {
       remainingTime: 0,
+    },
+    [SCHEDULES_DRAWER]: {
+      schedules: {},
     },
     loaded: false,
   });
@@ -69,10 +77,12 @@ export const App: React.FC = () => {
     (async () => {
       const dayCards: CardModel[] = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
       const lessonCards: CardModel[] = await apiRequest.get(`schedules/lesson/${DEFAULT_SCHEDULE_ID}/cards`);
+      const schedules = await apiRequest.get('childs/1/schedules/lesson');
       setState({
         ...state,
         [PANEL_DAY]: { cards: dayCards.sort(sortCards) },
         [PANEL_LESSON]: { cards: lessonCards.sort(sortCards) },
+        [SCHEDULES_DRAWER]: { schedules },
         loaded: true
       });
     })();
@@ -98,7 +108,7 @@ export const App: React.FC = () => {
           <Timer remainingTime={state[PANEL_TIMER].remainingTime} id={PANEL_TIMER}/>
         </div>
         <div className={styles.sidebar}>
-          <Sidebar />
+          <Sidebar schedules={state[SCHEDULES_DRAWER].schedules} />
         </div>
         <Routes>
           <Route path="/" element={
