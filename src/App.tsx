@@ -21,6 +21,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { EditCard } from './components/EditCard/EditCard';
 
 import styles from './App.module.css';
+import { Sidebar } from './components/Sidebar/Sidebar';
 
 export interface AppState {
   [PANEL_HOME]: any,
@@ -95,6 +96,9 @@ export const App: React.FC = () => {
       <div className={styles.app}>
         <div className={pathname === '/timer' ? styles.timer : styles.timerHidden}>
           <Timer remainingTime={state[PANEL_TIMER].remainingTime} id={PANEL_TIMER}/>
+        </div>
+        <div className={styles.sidebar}>
+          <Sidebar />
         </div>
         <Routes>
           <Route path="/" element={

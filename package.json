@@ -20,7 +20,9 @@
     "react-bootstrap-icons": "^1.9.1",
     "react-countdown-circle-timer": "^3.0.9",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.3.0"
+    "react-icons": "^4.6.0",
+    "react-router-dom": "^6.3.0",
+    "styled-components": "^5.3.6"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",
