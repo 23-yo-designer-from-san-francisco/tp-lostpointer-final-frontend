@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Star, StarFill } from 'react-bootstrap-icons';
 import styles from './SubMenu.module.css';
+import { ScheduleModel } from '../../Interfaces';
 
 const SidebarLink = styled(Link)`
   display: flex;
@@ -43,35 +44,51 @@ const DropdownLink = styled(Link)`
 `;
 
 export interface SubMenuProps {
-  item: any;
+  item?: ScheduleModel;
+  create?: boolean;
 }
 
-const SubMenu: React.FC<SubMenuProps> = ({ item }) => {
-  const [subnav, setSubnav] = useState(false);
+const SubMenu: React.FC<SubMenuProps> = ({ item, create }) => {
+  // const [subnav, setSubnav] = useState(false);
   const [starred, setStarred] = useState(false);
 
-  const showSubnav = () => setSubnav(!subnav);
+  const location = useLocation();
+  // const showSubnav = () => setSubnav(!subnav);
   const starClicked = (e: any) => {
     e.preventDefault();
     setStarred(!starred);
   };
 
-  return (
+  const newClicked = () => {
+    alert('  Н О В И Н К А А!!! N    E W )))');
+  };
+
+  return (create ?
+    <SidebarLink onClick={newClicked} to={'#'}
+    >
+      <div className={styles.line}>
+        {/*{item.icon}*/}
+        <SidebarLabel>N       E       W !!!!!</SidebarLabel>
+      </div>
+    </SidebarLink>
+    :
     <>
-      <SidebarLink to={item.path} onClick={item.subNav && showSubnav}>
+      <SidebarLink to={`/${location.pathname.split('/')[1]}/${item?.id}`}
+        // onClick={item.subNav && showSubnav}
+      >
         <div className={styles.line}>
           {/*{item.icon}*/}
-          <SidebarLabel>{item.title}</SidebarLabel>
+          <SidebarLabel>{item?.name}</SidebarLabel>
           {!starred && <Star data-star={'off'} onClick={starClicked}/>}
           {starred && <StarFill data-star={'on'} onClick={starClicked}/>}
         </div>
-        <div>
-          {item.subNav && subnav
-            ? item.iconOpened
-            : item.subNav
-              ? item.iconClosed
-              : null}
-        </div>
+        {/*<div>*/}
+        {/*  {item.subNav && subnav*/}
+        {/*    ? item.iconOpened*/}
+        {/*    : item.subNav*/}
+        {/*      ? item.iconClosed*/}
+        {/*      : null}*/}
+        {/*</div>*/}
       </SidebarLink>
       {/*{subnav && item.subNav.map((item: any, index: number) => {*/}
       {/*  return (*/}

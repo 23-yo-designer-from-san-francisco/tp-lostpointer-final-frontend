@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
-import { SidebarData } from './SidebarData';
 import { SubMenu } from './SubMenu';
 import { IconContext } from 'react-icons/lib';
+import { ScheduleModel } from '../../Interfaces';
 
 const Nav = styled.div`
   // background: #15171c;
@@ -46,10 +46,15 @@ export interface SidebarProps {
   sidebar?: boolean;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ schedules }) => {
+export const Sidebar: React.FC<SidebarProps> = (props) => {
+  const { schedules } = props;
   const [sidebar, setSidebar] = useState(false);
 
   const showSidebar = () => setSidebar(!sidebar);
+
+  if (!Array.isArray(schedules)) {
+    return null;
+  }
 
   return (
     <>
@@ -64,9 +69,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ schedules }) => {
             <NavIcon to='#'>
               <AiIcons.AiOutlineClose onClick={showSidebar} />
             </NavIcon>
-            {SidebarData.map((item, index) => {
-              return <SubMenu item={item} key={index} />;
-            })}
+            <>
+              <SubMenu create={true} key={-1}/>
+              {schedules.map((item: ScheduleModel, index: number) => {
+                return <SubMenu item={item} key={index} />;
+              })}
+            </>
           </SidebarWrap>
         </SidebarNav>
       </IconContext.Provider>

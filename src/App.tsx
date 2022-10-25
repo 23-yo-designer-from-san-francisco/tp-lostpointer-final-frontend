@@ -17,7 +17,7 @@ import {
   SCHEDULES_DRAWER
 } from './pages';
 import { AppContext, AppContextProps } from './AppContext';
-import { CardModel } from './Interfaces';
+import { CardModel, ScheduleModel } from './Interfaces';
 import { apiRequest } from './services/request';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { EditCard } from './components/EditCard/EditCard';
@@ -77,7 +77,7 @@ export const App: React.FC = () => {
     (async () => {
       const dayCards: CardModel[] = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
       const lessonCards: CardModel[] = await apiRequest.get(`schedules/lesson/${DEFAULT_SCHEDULE_ID}/cards`);
-      const schedules = await apiRequest.get('childs/1/schedules/lesson');
+      const schedules: ScheduleModel[] = await apiRequest.get(`childs/${DEFAULT_SCHEDULE_ID}/schedules/lesson`);
       setState({
         ...state,
         [PANEL_DAY]: { cards: dayCards.sort(sortCards) },
