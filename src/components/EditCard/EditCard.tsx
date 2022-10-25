@@ -5,8 +5,9 @@ import { ContentType, defaultBackendRootURL } from '../../services/requestUtils'
 import { AppContext } from '../../AppContext';
 import { Panel, PANEL_DAY, PANEL_LESSON } from '../../pages';
 import { CardModel } from '../../Interfaces';
+import { makeid } from './utils';
 
-import styles from './EditCard.module.css';
+import styles from './EditCard.module.css';x;
 
 export interface EditCardProps {
   parent: Panel;
@@ -96,7 +97,7 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
       } else {
         const newCard = await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards`, formdata, ContentType.FORM);
         const { cards } = appContext.getPanelData(parent);
-        const index = cards.findIndex((card: CardModel) => !card.id);
+        const index = cards.findIndex((card: CardModel) => !card.id || card.id.startsWith('empty-'));
         cards[index] = newCard;
         appContext.updatePanel(parent, { cards: cards });
       }
@@ -138,7 +139,7 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
     // не уменьшаем количество карточкек на главном экране меньше 3-х
     if (cards.length <= 3) {
       const index = cards.findIndex((card: CardModel) => String(card.id) === cardId);
-      cards[index] = { orderPlace: index, schedule_id: parseInt(String(scheduleId)) };
+      cards[index] = { id: `empty-${makeid(5)}`, orderPlace: index, schedule_id: parseInt(String(scheduleId)) };
     } else {
       cards.splice(cards.findIndex((card: CardModel) => String(card.id) === cardId), 1);
     }

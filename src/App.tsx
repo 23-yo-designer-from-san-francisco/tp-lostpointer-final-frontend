@@ -19,6 +19,7 @@ import { CardModel } from './Interfaces';
 import { apiRequest } from './services/request';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { EditCard } from './components/EditCard/EditCard';
+import { makeid } from './utils';
 
 import styles from './App.module.css';
 
@@ -82,10 +83,10 @@ export const App: React.FC = () => {
       });
       // добавляем пустые карточки, чтобы они в начале отображались
       while (dayCards.length < 3) {
-        dayCards.push({ id: `empty-${dayCards.length}`, orderPlace: dayCards.length, schedule_id: DEFAULT_SCHEDULE_ID });
+        dayCards.push({ id: `empty-${makeid(5)}`, orderPlace: dayCards.length, schedule_id: DEFAULT_SCHEDULE_ID });
       }
       while (lessonCards.length < 3) {
-        lessonCards.push({ id: `empty-${lessonCards.length}`, orderPlace: lessonCards.length, schedule_id: DEFAULT_SCHEDULE_ID });
+        lessonCards.push({ id: `empty-${makeid(5)}`, orderPlace: lessonCards.length, schedule_id: DEFAULT_SCHEDULE_ID });
       }
       setState({
         ...state,
