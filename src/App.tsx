@@ -69,14 +69,23 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      const dayCards: CardModel[] = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
-      const lessonCards: CardModel[] = await apiRequest.get(`schedules/lesson/${DEFAULT_SCHEDULE_ID}/cards`);
+      let dayCards: CardModel[] = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
+      let lessonCards: CardModel[] = await apiRequest.get(`schedules/lesson/${DEFAULT_SCHEDULE_ID}/cards`);
+      // TODO надо будет убрать, когда айдишники станут uuid
+      dayCards = dayCards.map((card) => {
+        card.id = String(card.id);
+        return card;
+      });
+      lessonCards = lessonCards.map((card) => {
+        card.id = String(card.id);
+        return card;
+      });
       // добавляем пустые карточки, чтобы они в начале отображались
       while (dayCards.length < 3) {
-        dayCards.push({ orderPlace: dayCards.length, schedule_id: DEFAULT_SCHEDULE_ID });
+        dayCards.push({ id: `empty-${dayCards.length}`, orderPlace: dayCards.length, schedule_id: DEFAULT_SCHEDULE_ID });
       }
       while (lessonCards.length < 3) {
-        lessonCards.push({ orderPlace: lessonCards.length, schedule_id: DEFAULT_SCHEDULE_ID });
+        lessonCards.push({ id: `empty-${lessonCards.length}`, orderPlace: lessonCards.length, schedule_id: DEFAULT_SCHEDULE_ID });
       }
       setState({
         ...state,

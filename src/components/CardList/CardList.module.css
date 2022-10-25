@@ -2,9 +2,10 @@
     white-space: nowrap;
     overflow-y: scroll;
     max-width: 100vw;
+    display: flex;
 }
 
-.cardList > ul > li {
+.cardItem {
     margin: 5px;
     display: inline-block;
     overflow-y: scroll;

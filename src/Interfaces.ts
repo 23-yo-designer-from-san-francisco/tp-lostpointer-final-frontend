@@ -1,5 +1,5 @@
 export interface CardModel {
-    id?: number;
+    id?: string;
     name?: string;
     startTime?: string;
     endTime?: string;
