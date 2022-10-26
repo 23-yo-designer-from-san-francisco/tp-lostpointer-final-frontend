@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CardList } from '../CardList/CardList';
 import { DAY_CARD_LIST, DEFAULT_SCHEDULE_ID, Panel } from '../../pages';
 import { CardModel } from '../../Interfaces';
@@ -17,6 +17,11 @@ const Day: React.FC<DayProps> = ({ id, cards= [] }) => {
   if (!parsedScheduleId) {
     parsedScheduleId = DEFAULT_SCHEDULE_ID;
   }
+
+  useEffect(() => {
+    // Вот сюда кажется надо вставить получение даных
+  }, []);
+
   return(<>
     <div className={styles.dayTitle}>Расписание на день</div>
     <div id={id}>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 import { SubMenu } from './SubMenu';
@@ -42,17 +42,20 @@ const SidebarWrap = styled.div`
 `;
 
 export interface SidebarProps {
-  schedules?: any;
+  daySchedules?: any;
+  lessonSchedules?: any;
   sidebar?: boolean;
 }
 
-export const Sidebar: React.FC<SidebarProps> = (props) => {
-  const { schedules } = props;
+export const Sidebar: React.FC<SidebarProps> = ({ daySchedules, lessonSchedules }) => {
   const [sidebar, setSidebar] = useState(false);
+  const location = useLocation();
+  const currentPage = location.pathname.split('/')[1];
+  const arr = currentPage === 'day' ? daySchedules : lessonSchedules;
 
   const showSidebar = () => setSidebar(!sidebar);
 
-  if (!Array.isArray(schedules)) {
+  if (!Array.isArray(daySchedules) || !Array.isArray(lessonSchedules)) {
     return null;
   }
 
@@ -71,7 +74,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
             </NavIcon>
             <>
               <SubMenu create={true} key={-1}/>
-              {schedules.map((item: ScheduleModel, index: number) => {
+              {arr.map((item: ScheduleModel, index: number) => {
                 return <SubMenu item={item} key={index} />;
               })}
             </>

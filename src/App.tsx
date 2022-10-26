@@ -39,7 +39,8 @@ export interface AppState {
     remainingTime: number,
   },
   [SCHEDULES_DRAWER]: {
-    schedules: any,
+    daySchedules: any,
+    lessonSchedules: any,
   }
   loaded: boolean,
 }
@@ -59,7 +60,8 @@ export const App: React.FC = () => {
       remainingTime: 0,
     },
     [SCHEDULES_DRAWER]: {
-      schedules: {},
+      daySchedules: {},
+      lessonSchedules: {}
     },
     loaded: false,
   });
@@ -81,7 +83,8 @@ export const App: React.FC = () => {
     (async () => {
       let dayCards: CardModel[] = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
       let lessonCards: CardModel[] = await apiRequest.get(`schedules/lesson/${DEFAULT_SCHEDULE_ID}/cards`);
-      const schedules: ScheduleModel[] = await apiRequest.get(`childs/${DEFAULT_SCHEDULE_ID}/schedules/lesson`);
+      const daySchedules: ScheduleModel[] = await apiRequest.get(`childs/${DEFAULT_SCHEDULE_ID}/schedules/day`);
+      const lessonSchedules: ScheduleModel[] = await apiRequest.get(`childs/${DEFAULT_SCHEDULE_ID}/schedules/lesson`);
       // TODO надо будет убрать, когда айдишники станут uuid
       dayCards = dayCards.map((card) => {
         card.id = String(card.id);
@@ -102,7 +105,7 @@ export const App: React.FC = () => {
         ...state,
         [PANEL_DAY]: { cards: dayCards.sort(sortCards) },
         [PANEL_LESSON]: { cards: lessonCards.sort(sortCards) },
-        [SCHEDULES_DRAWER]: { schedules },
+        [SCHEDULES_DRAWER]: { daySchedules, lessonSchedules },
         loaded: true
       });
     })();
@@ -128,7 +131,10 @@ export const App: React.FC = () => {
           <Timer remainingTime={state[PANEL_TIMER].remainingTime} id={PANEL_TIMER}/>
         </div>
         <div className={styles.sidebar}>
-          <Sidebar schedules={state[SCHEDULES_DRAWER].schedules} />
+          <Sidebar
+            daySchedules={state[SCHEDULES_DRAWER].daySchedules}
+            lessonSchedules={state[SCHEDULES_DRAWER].lessonSchedules}
+          />
         </div>
         <Routes>
           <Route path="/" element={
