@@ -61,6 +61,7 @@ const CardList: React.FC<CardListProps> = ({ id, scheduleId, parent,  cards = []
                     >
                       <Card
                         parent={parent}
+                        index={index}
                         cardId={item.id}
                         cardName={item.name}
                         startTime={item.startTime}

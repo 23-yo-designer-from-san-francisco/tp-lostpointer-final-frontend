@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { apiRequest } from '../../services/request';
 import { ContentType, defaultBackendRootURL } from '../../services/requestUtils';
 import { AppContext } from '../../AppContext';
-import { Panel, PANEL_DAY, PANEL_LESSON } from '../../pages';
+import { NEW_CARD_ORDER, Panel, PANEL_DAY, PANEL_LESSON } from '../../pages';
 import { CardModel } from '../../Interfaces';
 import { makeid } from '../../utils';
 
@@ -55,6 +55,8 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
       setWarning('Нужно ввести новые значения!');
     } else {
       setWarning('');
+      // читаем из хранилища расположение карточки
+      const newCardOrder = appContext.getPanelData(NEW_CARD_ORDER);
       const formdata = new FormData();
       // формируем объект для тела запроса
       const newCardJson: CardModel = {};
@@ -72,6 +74,10 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
       }
       // помещаем объект в formdata
       if (newCardJson) {
+        if (newCardOrder) {
+          newCardJson.orderPlace = newCardOrder;
+          appContext.updatePanel(NEW_CARD_ORDER, null);
+        }
         formdata.append('card', JSON.stringify(newCardJson));
       }
       // если редактируем карточку
@@ -97,7 +103,10 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
       } else {
         const newCard = await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards`, formdata, ContentType.FORM);
         const { cards } = appContext.getPanelData(parent);
-        const index = cards.findIndex((card: CardModel) => !card.id || card.id.startsWith('empty-'));
+        let index = 0;
+        if (newCardOrder) {
+          index = cards.findIndex((card: CardModel) => card.orderPlace === newCardOrder);
+        }
         cards[index] = newCard;
         appContext.updatePanel(parent, { cards: cards });
       }

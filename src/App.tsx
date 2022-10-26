@@ -14,7 +14,8 @@ import {
   PANEL_LESSON,
   PANEL_TIMER,
   Panel,
-  SCHEDULES_DRAWER
+  SCHEDULES_DRAWER,
+  NEW_CARD_ORDER,
 } from './pages';
 import { AppContext, AppContextProps } from './AppContext';
 import { CardModel, ScheduleModel } from './Interfaces';
@@ -40,7 +41,8 @@ export interface AppState {
   },
   [SCHEDULES_DRAWER]: {
     schedules: any,
-  }
+  },
+  [NEW_CARD_ORDER]: number|null,
   loaded: boolean,
 }
 
@@ -61,6 +63,7 @@ export const App: React.FC = () => {
     [SCHEDULES_DRAWER]: {
       schedules: {},
     },
+    [NEW_CARD_ORDER]: null,
     loaded: false,
   });
 
@@ -92,11 +95,23 @@ export const App: React.FC = () => {
         return card;
       });
       // добавляем пустые карточки, чтобы они в начале отображались
-      while (dayCards.length < 3) {
-        dayCards.push({ id: `empty-${makeid(5)}`, orderPlace: dayCards.length, schedule_id: DEFAULT_SCHEDULE_ID });
+      if (dayCards.length < 3) {
+        dayCards = [...Array(3).keys()].map((index) => {
+          const card = dayCards.find((card) => card.orderPlace === index + 1);
+          if (card) {
+            return card;
+          }
+          return { id: `empty-${makeid(5)}`, orderPlace: index + 1, schedule_id: DEFAULT_SCHEDULE_ID };
+        });
       }
-      while (lessonCards.length < 3) {
-        lessonCards.push({ id: `empty-${makeid(5)}`, orderPlace: lessonCards.length, schedule_id: DEFAULT_SCHEDULE_ID });
+      if (lessonCards.length < 3) {
+        lessonCards = [...Array(3).keys()].map((index) => {
+          const card = lessonCards.find((card) => card.orderPlace === index + 1);
+          if (card) {
+            return card;
+          }
+          return { id: `empty-${makeid(5)}`, orderPlace: index + 1, schedule_id: DEFAULT_SCHEDULE_ID };
+        });
       }
       setState({
         ...state,

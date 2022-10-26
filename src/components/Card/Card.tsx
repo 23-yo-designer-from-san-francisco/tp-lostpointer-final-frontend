@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Panel, PANEL_DAY, PANEL_LESSON } from '../../pages';
+import { NEW_CARD_ORDER, Panel, PANEL_DAY, PANEL_LESSON } from '../../pages';
 import { apiRequest } from '../../services/request';
 import { ContentType, defaultBackendRootURL } from '../../services/requestUtils';
 import { AppContext } from '../../AppContext';
@@ -10,6 +10,7 @@ import styles from './Card.module.css';
 
 export interface CardProps {
   parent: Panel;
+  index: number;
   done?: boolean;
   cardId?: string;
   cardName?: string;
@@ -19,7 +20,7 @@ export interface CardProps {
   scheduleId?: number;
 }
 
-const Card: React.FC<CardProps> = ({ parent, cardId, cardName, startTime, endTime, done, imgUrl, scheduleId }) => {
+const Card: React.FC<CardProps> = ({ index, parent, cardId, cardName, startTime, endTime, done, imgUrl, scheduleId }) => {
   const appContext = useContext(AppContext);
   const navigate = useNavigate();
   const [_done, setDone] = useState<boolean>(Boolean(done));
@@ -61,15 +62,9 @@ const Card: React.FC<CardProps> = ({ parent, cardId, cardName, startTime, endTim
     navigate(`card/${cardId}`);
   };
 
-  // const longPressEvent = useLongPress(
-  //   onLongPress,
-  //   () => {},
-  //   {
-  //     shouldPreventDefault: true,
-  //     delay: 500,
-  //   });
-
   const createNewHandler = () => {
+    // записываем в хранилище расположение карточки
+    appContext.updatePanel(NEW_CARD_ORDER, index + 1);
     navigate('new');
   };
 
