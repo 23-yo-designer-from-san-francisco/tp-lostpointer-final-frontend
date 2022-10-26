@@ -9,7 +9,7 @@ export const NEW_CARD_ORDER = 'new-card-order';
 export const DAY_CARD_LIST = 'day-card-list';
 export const LESSON_CARD_LIST = 'lesson-card-list';
 
-export const DEFAULT_SCHEDULE_ID = 1;
+export const DEFAULT_CHILD_ID = 1;
 
 export declare type Panel =
     'panel-day' |

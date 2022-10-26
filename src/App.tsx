@@ -7,7 +7,6 @@ import { BeforeAfter } from './components/BeforeAfter/BeforeAfter';
 import { Timer } from './components/Timer/Timer';
 import { Tabbar } from './components/Tabbar/Tabbar';
 import {
-  DEFAULT_SCHEDULE_ID,
   PANEL_BEFORE_AFTER,
   PANEL_DAY,
   PANEL_HOME,
@@ -16,6 +15,7 @@ import {
   Panel,
   SCHEDULES_DRAWER,
   NEW_CARD_ORDER,
+  DEFAULT_CHILD_ID,
 } from './pages';
 import { AppContext, AppContextProps } from './AppContext';
 import { CardModel, ScheduleModel } from './Interfaces';
@@ -82,9 +82,11 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      let dayCards: CardModel[] = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
-      let lessonCards: CardModel[] = await apiRequest.get(`schedules/lesson/${DEFAULT_SCHEDULE_ID}/cards`);
-      const schedules: ScheduleModel[] = await apiRequest.get(`childs/${DEFAULT_SCHEDULE_ID}/schedules/lesson`);
+      let scheduleId: number|string = pathname.split('/')[2];
+      scheduleId = parseInt(String(scheduleId));
+      let dayCards: CardModel[] = await apiRequest.get(`schedules/day/${scheduleId}/cards`);
+      let lessonCards: CardModel[] = await apiRequest.get(`schedules/lesson/${scheduleId}/cards`);
+      const schedules: ScheduleModel[] = await apiRequest.get(`childs/${DEFAULT_CHILD_ID}/schedules/lesson`);
       // TODO надо будет убрать, когда айдишники станут uuid
       dayCards = dayCards.map((card) => {
         card.id = String(card.id);
@@ -101,7 +103,7 @@ export const App: React.FC = () => {
           if (card) {
             return card;
           }
-          return { id: `empty-${makeid(5)}`, orderPlace: index + 1, schedule_id: DEFAULT_SCHEDULE_ID };
+          return { id: `empty-${makeid(5)}`, orderPlace: index + 1, schedule_id: scheduleId };
         });
       }
       if (lessonCards.length < 3) {
@@ -110,7 +112,7 @@ export const App: React.FC = () => {
           if (card) {
             return card;
           }
-          return { id: `empty-${makeid(5)}`, orderPlace: index + 1, schedule_id: DEFAULT_SCHEDULE_ID };
+          return { id: `empty-${makeid(5)}`, orderPlace: index + 1, schedule_id: scheduleId };
         });
       }
       setState({

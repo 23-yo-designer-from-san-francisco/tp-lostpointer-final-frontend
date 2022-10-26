@@ -1,6 +1,6 @@
 import React from 'react';
 import { CardList } from '../CardList/CardList';
-import { DEFAULT_SCHEDULE_ID, LESSON_CARD_LIST, Panel } from '../../pages';
+import { LESSON_CARD_LIST, Panel } from '../../pages';
 import { CardModel } from '../../Interfaces';
 import { useParams } from 'react-router-dom';
 
@@ -13,10 +13,7 @@ export interface LessonProps {
 
 const Lesson: React.FC<LessonProps> = ({ id, cards }) => {
   const { scheduleId } = useParams();
-  let parsedScheduleId = parseInt(String(scheduleId));
-  if (!parsedScheduleId) {
-    parsedScheduleId = DEFAULT_SCHEDULE_ID;
-  }
+  const parsedScheduleId = parseInt(String(scheduleId));
   return(<>
     <div className={styles.lessonTitle}>Расписание на занятие</div>
     <div id={id}>

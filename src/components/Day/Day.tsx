@@ -1,6 +1,6 @@
 import React from 'react';
 import { CardList } from '../CardList/CardList';
-import { DAY_CARD_LIST, DEFAULT_SCHEDULE_ID, Panel } from '../../pages';
+import { DAY_CARD_LIST, Panel } from '../../pages';
 import { CardModel } from '../../Interfaces';
 import { useParams } from 'react-router-dom';
 
@@ -13,10 +13,7 @@ export interface DayProps {
 
 const Day: React.FC<DayProps> = ({ id, cards= [] }) => {
   const { scheduleId } = useParams();
-  let parsedScheduleId = parseInt(String(scheduleId));
-  if (!parsedScheduleId) {
-    parsedScheduleId = DEFAULT_SCHEDULE_ID;
-  }
+  const parsedScheduleId = parseInt(String(scheduleId));
   return(<>
     <div className={styles.dayTitle}>Расписание на день</div>
     <div id={id}>
