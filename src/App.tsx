@@ -6,19 +6,22 @@ import { Lesson } from './components/Lesson/Lesson';
 import { BeforeAfter } from './components/BeforeAfter/BeforeAfter';
 import { Timer } from './components/Timer/Timer';
 import { Tabbar } from './components/Tabbar/Tabbar';
-import { DEFAULT_SCHEDULE_ID,
+import {
+  DEFAULT_SCHEDULE_ID,
   PANEL_BEFORE_AFTER,
   PANEL_DAY,
   PANEL_HOME,
   PANEL_LESSON,
   PANEL_TIMER,
-  Panel
+  Panel,
+  SCHEDULES_DRAWER
 } from './pages';
 import { AppContext, AppContextProps } from './AppContext';
-import { CardModel } from './Interfaces';
+import { CardModel, ScheduleModel } from './Interfaces';
 import { apiRequest } from './services/request';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { EditCard } from './components/EditCard/EditCard';
+import { Sidebar } from './components/Sidebar/Sidebar';
 import { makeid } from './utils';
 
 import styles from './App.module.css';
@@ -35,6 +38,9 @@ export interface AppState {
   [PANEL_TIMER]: {
     remainingTime: number,
   },
+  [SCHEDULES_DRAWER]: {
+    schedules: any,
+  }
   loaded: boolean,
 }
 
@@ -51,6 +57,9 @@ export const App: React.FC = () => {
     [PANEL_BEFORE_AFTER]: {},
     [PANEL_TIMER]: {
       remainingTime: 0,
+    },
+    [SCHEDULES_DRAWER]: {
+      schedules: {},
     },
     loaded: false,
   });
@@ -72,6 +81,7 @@ export const App: React.FC = () => {
     (async () => {
       let dayCards: CardModel[] = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
       let lessonCards: CardModel[] = await apiRequest.get(`schedules/lesson/${DEFAULT_SCHEDULE_ID}/cards`);
+      const schedules: ScheduleModel[] = await apiRequest.get(`childs/${DEFAULT_SCHEDULE_ID}/schedules/lesson`);
       // TODO надо будет убрать, когда айдишники станут uuid
       dayCards = dayCards.map((card) => {
         card.id = String(card.id);
@@ -92,6 +102,7 @@ export const App: React.FC = () => {
         ...state,
         [PANEL_DAY]: { cards: dayCards.sort(sortCards) },
         [PANEL_LESSON]: { cards: lessonCards.sort(sortCards) },
+        [SCHEDULES_DRAWER]: { schedules },
         loaded: true
       });
     })();
@@ -115,6 +126,9 @@ export const App: React.FC = () => {
       <div className={styles.app}>
         <div className={pathname === '/timer' ? styles.timer : styles.timerHidden}>
           <Timer remainingTime={state[PANEL_TIMER].remainingTime} id={PANEL_TIMER}/>
+        </div>
+        <div className={styles.sidebar}>
+          <Sidebar schedules={state[SCHEDULES_DRAWER].schedules} />
         </div>
         <Routes>
           <Route path="/" element={
