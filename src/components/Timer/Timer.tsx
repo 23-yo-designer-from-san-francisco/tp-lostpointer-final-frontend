@@ -8,7 +8,7 @@ import tickSound from '../../../assets/tick.opus';
 import finishSound from '../../../assets/finished.opus';
 
 import styles from './Timer.module.css';
-import { Button, Table } from 'react-bootstrap';
+import { Button, FormCheck, Table } from 'react-bootstrap';
 import { Pause, Play, Stop } from 'react-bootstrap-icons';
 import formatDuration from 'format-duration';
 
@@ -25,6 +25,7 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
   const [key, setKey] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isPaused, setIsIsPaused] = useState<boolean>(false);
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [tick] = useState(new Howl({
     src: [tickSound],
     loop: true,
@@ -38,7 +39,9 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
     if (userDefinedDuration === 0 && !isPaused || isPlaying && !isPaused) {
       return;
     }
-    tick.play();
+    if (soundEnabled) {
+      tick.play();
+    }
     if (isPaused) {
       setIsIsPaused(false);
       return setIsPlaying(true);
@@ -70,7 +73,9 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
     const stringTime = e.currentTarget.innerHTML;
     const seconds = stringTime.split(':').reduce((res: number, time: string) => res * 60 + parseInt(time), 0);
     setDuration(seconds);
-    tick.play();
+    if (soundEnabled) {
+      tick.play();
+    }
     setIsPlaying(true);
     setIsIsPaused(false);
     setKey(key+1);
@@ -78,7 +83,9 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
 
   const timerCompleteHandler = () => {
     tick.stop();
-    finished.play();
+    if (soundEnabled) {
+      finished.play();
+    }
     finished.fade(1, 0, FINISHED_FADE_TIME);
     setTimeout(() => finished.stop(), FINISHED_FADE_TIME);
   };
@@ -132,6 +139,10 @@ const Timer: React.FC<TimerProps> = ({ id, remainingTime = 0 }) => {
             <Button variant="danger" className={styles.button} onClick={stopClicked}>
               <Stop/>
             </Button>
+          </div>
+          <div className={styles.sound}>
+            <span>Звук</span>
+            <FormCheck checked={soundEnabled} onChange={() => setSoundEnabled(!soundEnabled)}/>
           </div>
         </form>
       </div>

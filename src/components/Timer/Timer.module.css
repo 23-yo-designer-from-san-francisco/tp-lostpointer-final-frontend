@@ -41,3 +41,8 @@ display: flex;
     display: flex;
     justify-content: center;
 }
+
+.sound {
+    display: flex;
+    justify-content: space-between;
+}
