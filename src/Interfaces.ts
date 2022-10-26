@@ -1,9 +1,11 @@
 export interface CardModel {
-    id?: number;
+    id?: string;
     name?: string;
+    startTime?: string;
+    endTime?: string;
     done?: boolean;
     imgUrl?: string;
-    orderPlace: number;
+    orderPlace?: number;
     schedule_id?: number;
 }
 

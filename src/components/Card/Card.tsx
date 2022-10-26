@@ -1,9 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useLongPress from '../../useLongPress';
 import { Panel, PANEL_DAY, PANEL_LESSON } from '../../pages';
 import { apiRequest } from '../../services/request';
-import { ContentType } from '../../services/requestUtils';
+import { ContentType, defaultBackendRootURL } from '../../services/requestUtils';
 import { AppContext } from '../../AppContext';
 import { CardModel } from '../../Interfaces';
 
@@ -12,12 +11,15 @@ import styles from './Card.module.css';
 export interface CardProps {
   parent: Panel;
   done?: boolean;
-  cardId?: number;
+  cardId?: string;
+  cardName?: string;
+  startTime?: string;
+  endTime?: string;
   imgUrl?: string;
   scheduleId?: number;
 }
 
-const Card: React.FC<CardProps> = ({ parent, cardId, done, imgUrl, scheduleId }) => {
+const Card: React.FC<CardProps> = ({ parent, cardId, cardName, startTime, endTime, done, imgUrl, scheduleId }) => {
   const appContext = useContext(AppContext);
   const navigate = useNavigate();
   const [_done, setDone] = useState<boolean>(Boolean(done));
@@ -36,40 +38,72 @@ const Card: React.FC<CardProps> = ({ parent, cardId, done, imgUrl, scheduleId })
     currentCard.done = !_done;
     (async () => {
       const formdata = new FormData();
-      formdata.append('card', JSON.stringify({ 'done': !_done }));
-      await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}`, formdata, ContentType.FORM);
+      formdata.append(
+        'card',
+        JSON.stringify(
+          {
+            'done': !_done,
+            'name': currentCard.name,
+            'startTime': currentCard.startTime,
+            'endTime': currentCard.endTime
+          }
+        )
+      );
+      await apiRequest.post(
+        `schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}`,
+        formdata,
+        ContentType.FORM
+      );
     })();
   };
 
-  const onLongPress = () => {
+  const editCard = () => {
     navigate(`card/${cardId}`);
   };
 
-  const longPressEvent = useLongPress(
-    onLongPress,
-    () => {},
-    {
-      shouldPreventDefault: true,
-      delay: 500,
-    });
+  // const longPressEvent = useLongPress(
+  //   onLongPress,
+  //   () => {},
+  //   {
+  //     shouldPreventDefault: true,
+  //     delay: 500,
+  //   });
 
   const createNewHandler = () => {
     navigate('new');
   };
 
-  return(<>
-    {!imgUrl && <div onClick={createNewHandler} className={`${styles.card} ${styles.cardEmpty}`}>+</div>}
+  return(<div className={styles.card}>
+    {!imgUrl &&
+        <>
+          <div className={styles.cardTime}></div>
+          <div onClick={createNewHandler} className={`${styles.cardInner} ${styles.cardInnerEmpty}`}>⊕</div>
+        </>
+    }
     {imgUrl && !_done &&
-        // @ts-ignore
-        <div onClick={toggleDone} className={styles.card} {...longPressEvent}>
-          <img className={styles.cardImg} src={imgUrl}/>
-        </div>}
+        <>
+          <div className={styles.cardTime}>{startTime}{startTime && endTime && <> - {endTime}</>}</div>
+          <div className={styles.cardInner}>
+            <img onClick={toggleDone} alt={cardName} className={styles.cardImg} src={imgUrl}/>
+            <div onClick={editCard} className={styles.cardEditIcon}>
+              <img alt='Изменить' src={`${defaultBackendRootURL}/images/pencil.svg`}/>
+            </div>
+          </div>
+          <div className={styles.cardName}>{cardName}</div>
+        </>}
     {imgUrl && _done &&
-        // @ts-ignore
-        <div onClick={toggleDone} className={`${styles.card} ${styles.transparent}`} {...longPressEvent}>
-          <img className={styles.cardImg} src={imgUrl}/>
-        </div>}
-  </>);
+        <>
+          <div className={`${styles.cardTime} ${styles.transparent}`}>{startTime}{startTime && endTime && <> - {endTime}</>}</div>
+          <div className={`${styles.cardInner} ${styles.transparent}`}>
+            <img onClick={toggleDone} alt={cardName} className={styles.cardImg} src={imgUrl}/>
+            <div onClick={editCard} className={styles.cardEditIcon}>
+              <img alt='Изменить' src={`${defaultBackendRootURL}/images/pencil.svg`}/>
+            </div>
+          </div>
+          <div className={`${styles.cardName} ${styles.transparent}`}>{cardName}</div>
+        </>
+    }
+  </div>);
 };
 
 export { Card };

@@ -4,7 +4,7 @@ import { DEFAULT_SCHEDULE_ID, LESSON_CARD_LIST, Panel } from '../../pages';
 import { CardModel } from '../../Interfaces';
 import { useParams } from 'react-router-dom';
 
-import './Lesson.css';
+import styles from './Lesson.module.css';
 
 export interface LessonProps {
     id: Panel;
@@ -17,10 +17,11 @@ const Lesson: React.FC<LessonProps> = ({ id, cards }) => {
   if (!parsedScheduleId) {
     parsedScheduleId = DEFAULT_SCHEDULE_ID;
   }
-  return(
+  return(<>
+    <div className={styles.lessonTitle}>Расписание на занятие</div>
     <div id={id}>
       <CardList parent={id} id={LESSON_CARD_LIST} scheduleId={parsedScheduleId} cards={cards}/>
-    </div>
+    </div></>
   );
 };
 

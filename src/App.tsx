@@ -21,9 +21,10 @@ import { CardModel, ScheduleModel } from './Interfaces';
 import { apiRequest } from './services/request';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { EditCard } from './components/EditCard/EditCard';
+import { Sidebar } from './components/Sidebar/Sidebar';
+import { makeid } from './utils';
 
 import styles from './App.module.css';
-import { Sidebar } from './components/Sidebar/Sidebar';
 
 export interface AppState {
   [PANEL_HOME]: any,
@@ -64,6 +65,9 @@ export const App: React.FC = () => {
   });
 
   const sortCards = (card1: CardModel, card2: CardModel) => {
+    if (!card1.orderPlace || !card2.orderPlace) {
+      return 0;
+    }
     if (card1.orderPlace < card2.orderPlace) {
       return -1;
     }
@@ -75,9 +79,25 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      const dayCards: CardModel[] = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
-      const lessonCards: CardModel[] = await apiRequest.get(`schedules/lesson/${DEFAULT_SCHEDULE_ID}/cards`);
+      let dayCards: CardModel[] = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
+      let lessonCards: CardModel[] = await apiRequest.get(`schedules/lesson/${DEFAULT_SCHEDULE_ID}/cards`);
       const schedules: ScheduleModel[] = await apiRequest.get(`childs/${DEFAULT_SCHEDULE_ID}/schedules/lesson`);
+      // TODO надо будет убрать, когда айдишники станут uuid
+      dayCards = dayCards.map((card) => {
+        card.id = String(card.id);
+        return card;
+      });
+      lessonCards = lessonCards.map((card) => {
+        card.id = String(card.id);
+        return card;
+      });
+      // добавляем пустые карточки, чтобы они в начале отображались
+      while (dayCards.length < 3) {
+        dayCards.push({ id: `empty-${makeid(5)}`, orderPlace: dayCards.length, schedule_id: DEFAULT_SCHEDULE_ID });
+      }
+      while (lessonCards.length < 3) {
+        lessonCards.push({ id: `empty-${makeid(5)}`, orderPlace: lessonCards.length, schedule_id: DEFAULT_SCHEDULE_ID });
+      }
       setState({
         ...state,
         [PANEL_DAY]: { cards: dayCards.sort(sortCards) },

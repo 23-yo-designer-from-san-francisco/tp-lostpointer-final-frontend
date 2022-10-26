@@ -1,10 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apiRequest } from '../../services/request';
-import { ContentType } from '../../services/requestUtils';
+import { ContentType, defaultBackendRootURL } from '../../services/requestUtils';
 import { AppContext } from '../../AppContext';
 import { Panel, PANEL_DAY, PANEL_LESSON } from '../../pages';
 import { CardModel } from '../../Interfaces';
+import { makeid } from '../../utils';
 
 import styles from './EditCard.module.css';
 
@@ -29,40 +30,74 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
 
   let currentName = '';
   let currentImgUrl = '';
+  let currentStartTime = '';
+  let currentEndTime = '';
   if (cardId) {
     const { cards } = appContext.getPanelData(parent);
     const currentCard = cards.find((card: CardModel) => String(card.id) === cardId);
-    currentName = currentCard.name;
-    currentImgUrl = currentCard.imgUrl;
+    if (currentCard) {
+      currentName = currentCard.name;
+      currentImgUrl = currentCard.imgUrl;
+      currentStartTime = currentCard.startTime;
+      currentEndTime = currentCard.endTime;
+    }
   }
 
   const [newName, setName] = useState<string|undefined>(currentName);
+  const [newStartTime, setStartTime] = useState<string|undefined>(currentStartTime);
+  const [newEndTime, setEndTime] = useState<string|undefined>(currentEndTime);
   const [newFile, setFile] = useState<File|null>(null);
   const [deleteConfirmation, setDeleteConfirmationState] = useState<boolean>(false);
 
   const submitEditFormHandler = async (event: any) => {
     event.preventDefault();
-    if (!newFile && newName == currentName) {
-      setWarning('Нужно новое фото или имя!');
-    } else if (!newFile && newName || newFile) {
+    if (!newFile && newName === currentName && newStartTime === currentStartTime && newEndTime === currentEndTime) {
+      setWarning('Нужно ввести новые значения!');
+    } else {
       setWarning('');
       const formdata = new FormData();
+      // формируем объект для тела запроса
+      const newCardJson: CardModel = {};
       if (newFile) {
         formdata.append('image', newFile);
       }
-      if (newName) {
-        formdata.append('card', JSON.stringify({ 'name': newName }));
+      if (newName !== currentName) {
+        newCardJson.name = newName;
       }
+      if (newStartTime !== currentStartTime) {
+        newCardJson.startTime = newStartTime;
+        if (newEndTime !== currentEndTime) {
+          newCardJson.endTime = newEndTime;
+        }
+      }
+      // помещаем объект в formdata
+      if (newCardJson) {
+        formdata.append('card', JSON.stringify(newCardJson));
+      }
+      // если редактируем карточку
       if (cardId) {
         const { cards } = appContext.getPanelData(parent);
         const currentCard = cards.find((card: CardModel) => String(card.id) === cardId);
-        currentCard.name = currentName;
-        currentCard.imgUrl = loadedImg;
+        if (currentCard) {
+          if (newFile) {
+            currentCard.imgUrl = loadedImg;
+          }
+          if (newName !== currentName) {
+            currentCard.name = newName;
+          }
+          if (newStartTime !== currentStartTime) {
+            currentCard.startTime = newStartTime;
+          }
+          if (newStartTime && newEndTime !== currentEndTime) {
+            currentCard.endTime = newEndTime;
+          }
+        }
         await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}`, formdata, ContentType.FORM);
+      // если создаем новую карточку
       } else {
         const newCard = await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards`, formdata, ContentType.FORM);
         const { cards } = appContext.getPanelData(parent);
-        const index = cards.findIndex((card: CardModel) => !card.id);
+        const index = cards.findIndex((card: CardModel) => !card.id || card.id.startsWith('empty-'));
         cards[index] = newCard;
         appContext.updatePanel(parent, { cards: cards });
       }
@@ -76,6 +111,14 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
 
   const uploadNameHandler = (event: any) => {
     setName(event.target.value);
+  };
+
+  const uploadStartTimeHandler = (event: any) => {
+    setStartTime(event.target.value);
+  };
+
+  const uploadEndTimeHandler = (event: any) => {
+    setEndTime(event.target.value);
   };
 
   const setDeleteConfirmation = () => {
@@ -93,7 +136,14 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
   const deleteCard = async () => {
     await apiRequest.post(`schedules/${endpointPrefix}/${scheduleId}/cards/${cardId}/goodbye`);
     const { cards } = appContext.getPanelData(parent);
-    cards.splice(cards.findIndex((card: CardModel) => String(card.id) === cardId), 1);
+    // не уменьшаем количество карточкек на главном экране меньше 3-х
+    if (cards.length <= 3) {
+      const index = cards.findIndex((card: CardModel) => String(card.id) === cardId);
+      cards[index] = { id: `empty-${makeid(5)}`, orderPlace: index, schedule_id: parseInt(String(scheduleId)) };
+    } else {
+      cards.splice(cards.findIndex((card: CardModel) => String(card.id) === cardId), 1);
+    }
+    appContext.updatePanel(parent, { cards: cards });
     navigate(-1);
   };
 
@@ -124,50 +174,93 @@ const EditCard: React.FC<EditCardProps> = ({ parent }) => {
 
   return(
     <div className={styles.editCard} onClick={resetDeleteConfirmation}>
-      <div className={styles.editCardContent}>
-        <img alt="Закрыть окно" className={styles.editCardClose} onClick={closeWindowHandler} src="https://lostpointer.tech/images/delete.svg"/>
-        {cardId && !deleteConfirmation && <img alt="Удалить карточку" onClick={setDeleteConfirmation} className={styles.editCardDelete} src="https://lostpointer.tech/images/trash.svg"/>}
-        {cardId && deleteConfirmation && <img alt="Удалить карточку" onClick={deleteCard} className={styles.editCardDelete} src="https://lostpointer.tech/images/trash.svg"/>}
-        <div className={styles.editCardContentFlex}>
-          <form className={styles.editCardForm} action='#' noValidate>
-            <div>
-              <div className={styles.editCardImageBlock}>
-                {!loadedImg && currentImgUrl && <img alt='Изображение' className={styles.editCardImageImg} src={currentImgUrl}/>}
-                {loadedImg && <img alt='Изображение' className={styles.editCardImageImg} src={loadedImg}/>}
+      <form className={styles.editCardForm} action='#' noValidate>
+        <div className={styles.editCardContent}>
+          <div className={styles.editCardIcons}>
+            <img alt="Закрыть окно" className={styles.editCardClose} onClick={closeWindowHandler} src={`${defaultBackendRootURL}/images/delete.svg`}/>
+            {cardId && !deleteConfirmation && <img alt="Удалить карточку" onClick={setDeleteConfirmation} className={styles.editCardDelete} src={`${defaultBackendRootURL}/images/trash.svg`}/>}
+            {cardId && deleteConfirmation && <img alt="Удалить карточку" onClick={deleteCard} className={styles.editCardDelete} src={`${defaultBackendRootURL}/images/trash.svg`}/>}
+          </div>
+          <div className={styles.editCardFormTitle}>
+            {cardId && <>Изменить карточку</>}
+            {!cardId && <>Новая карточка</>}
+          </div>
+          <ul className={styles.editCardLine}>
+            <li>
+              <div className={styles.editCardLineItem}>
+                <div className={styles.editCardLineItemInner}>
+                  {!loadedImg && currentImgUrl && <img alt='Изображение' className={styles.editCardLineItemImg} src={currentImgUrl}/>}
+                  {loadedImg && <img alt='Изображение' className={styles.editCardLineItemImg} src={loadedImg}/>}
+                </div>
+                <div className={styles.editCardLineItemIconName}>Текущее изображение</div>
               </div>
-              <input onChange={uploadFileHandler}
-                type='file'
-                name='file'
-                id='file'
-                accept='image/png, image/jpg, image/webp'
-                className={styles.editCardImageInput}
-              />
-              <label htmlFor='file' className={styles.editCardImageInputBtn}>Upload file</label>
-            </div>
-            <div>
-              <div className={styles.editCardFormTitle}>
-                {cardId && <>Изменить карточку</>}
-                {!cardId && <>Новая карточка</>}
-              </div>
-              <input onChange={uploadNameHandler}
-                className={styles.editCardNameInput}
-                type="text"
-                name="name"
-                placeholder="Имя карточки"
-                value={newName}
-              />
-              <div className={styles.editCardFormButtons}>
-                <input onClick={submitEditFormHandler}
-                  className={styles.editCardFormSubmit}
-                  type='submit'
-                  value="Сохранить"
+            </li>
+            <li>
+              <div className={styles.editCardLineItem}>
+                <input onChange={uploadFileHandler}
+                  type='file'
+                  name='file'
+                  id='file'
+                  accept='image/png, image/jpg, image/webp'
+                  className={styles.editCardImageInput}
                 />
+                <label htmlFor='file'>
+                  <div className={styles.editCardLineItemInner}>
+                    <img alt='Загрузить с устройства' className={styles.editCardLineItemIcon} src={`${defaultBackendRootURL}/images/photo.svg`}/>
+                  </div>
+                  <div className={styles.editCardLineItemIconName}>Загрузить с устройства</div>
+                </label>
               </div>
-              <div className={styles.editCardFormMsg}>{warning}</div>
-            </div>
-          </form>
+            </li>
+            <li>
+              <div className={styles.editCardLineItem}>
+                <div className={styles.editCardLineItemInner}>
+                  <img alt='Выбрать из стоковых' className={styles.editCardLineItemIcon} src={`${defaultBackendRootURL}/images/gallery.svg`}/>
+                </div>
+                <div className={styles.editCardLineItemIconName}>Выбрать из стоковых</div>
+              </div>
+            </li>
+          </ul>
+          <div className={styles.editCardInputsBlock}>
+            <input onChange={uploadNameHandler}
+              className={styles.editCardInput}
+              type="text"
+              name="name"
+              placeholder="Имя карточки"
+              value={newName}
+            />
+            { parent === PANEL_DAY && <>
+              <label className={styles.editCardLabel} htmlFor="startTime">Начало:</label>
+              <input onChange={uploadStartTimeHandler}
+                className={styles.editCardInput}
+                type="time"
+                name="startTime"
+                id="startTime"
+                placeholder="Время начала"
+                value={newStartTime}
+              />
+              <label className={styles.editCardLabel} htmlFor="startTime">Конец:</label>
+              <input onChange={uploadEndTimeHandler}
+                className={styles.editCardInput}
+                type="time"
+                name="endTime"
+                id="endTime"
+                placeholder="Время окончания"
+                value={newEndTime}
+              />
+            </>}
+          </div>
+
+          <div className={styles.editCardFormButtons}>
+            <input onClick={submitEditFormHandler}
+              className={styles.editCardFormSubmit}
+              type='submit'
+              value="Сохранить"
+            />
+          </div>
+          <div className={styles.editCardFormMsg}>{warning}</div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

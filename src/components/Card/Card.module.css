@@ -1,23 +1,55 @@
 .card {
+    width: 290px;
+    height: 340px;
+}
+
+.cardInner {
     display: flex;
     width: 290px;
     height: 290px;
     object-fit: cover;
     background: linear-gradient(180deg, rgba(0, 0, 0, 5%) 0%, rgba(0, 0, 0, 2%) 100%);
     border-radius: 20px;
+    border: 3px solid black;
 }
 
-.cardEmpty {
+.cardTime {
+    height: 20px;
+    display: flex;
+    font-size: 15px;
+    justify-content: center;
+}
+
+.cardName {
+    height: 30px;
+    display: flex;
+    font-size: 20px;
+    justify-content: center;
+}
+
+.cardInnerEmpty {
     font-size: 150px;
     align-items: center;
     justify-content: center;
 }
 
 .cardImg {
-    width: 290px;
-    height: 290px;
+    width: 284px;
+    height: 284px;
     border-radius: 20px;
     object-fit: cover;
+}
+
+.cardEditIcon {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 30%);
+    border-radius: 50%;
+    margin: 10px 10px 10px 245px;
+    cursor: pointer;
+    display: block;
+    padding: 1px 5px;
 }
 
 .transparent {
