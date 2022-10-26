@@ -43,6 +43,8 @@ export interface AppState {
     lessonSchedules: any,
   }
   loaded: boolean,
+  currentDayScheduleId: number,
+  currentLessonScheduleId: number,
 }
 
 export const App: React.FC = () => {
@@ -64,6 +66,8 @@ export const App: React.FC = () => {
       lessonSchedules: {}
     },
     loaded: false,
+    currentDayScheduleId: 1,
+    currentLessonScheduleId: 1,
   });
 
   const sortCards = (card1: CardModel, card2: CardModel) => {
@@ -78,11 +82,12 @@ export const App: React.FC = () => {
     }
     return 0;
   };
-
+  const { currentDayScheduleId, currentLessonScheduleId } = state;
   useEffect(() => {
+    console.log(currentLessonScheduleId, currentLessonScheduleId);
     (async () => {
-      let dayCards: CardModel[] = await apiRequest.get(`schedules/day/${DEFAULT_SCHEDULE_ID}/cards`);
-      let lessonCards: CardModel[] = await apiRequest.get(`schedules/lesson/${DEFAULT_SCHEDULE_ID}/cards`);
+      let dayCards: CardModel[] = await apiRequest.get(`schedules/day/${currentDayScheduleId}/cards`);
+      let lessonCards: CardModel[] = await apiRequest.get(`schedules/lesson/${currentLessonScheduleId}/cards`);
       const daySchedules: ScheduleModel[] = await apiRequest.get(`childs/${DEFAULT_SCHEDULE_ID}/schedules/day`);
       const lessonSchedules: ScheduleModel[] = await apiRequest.get(`childs/${DEFAULT_SCHEDULE_ID}/schedules/lesson`);
       // TODO надо будет убрать, когда айдишники станут uuid
@@ -109,17 +114,34 @@ export const App: React.FC = () => {
         loaded: true
       });
     })();
-  }, []);
+  }, [currentDayScheduleId, currentLessonScheduleId]);
+  //
+  // useEffect(() => {
+  //   console.log(pathname);
+  //   const path = pathname.split('/');
+  //   if (path.length === 3) {
+  //     if (path[1] === 'day') {
+  //       setState({ ...state, currentDayScheduleId: parseInt(path[2]) });
+  //     } else if (path[1] === 'lesson' ) {
+  //       setState({ ...state, currentLessonScheduleId: parseInt(path[2]) });
+  //     }
+  //   }
+  // }, [pathname]);
 
   const updatePanel = ((panel: string, data: any) => {
     setState({ ...state, [panel]: data });
   });
+
+  const updateState = (data: any) => {
+    setState({ ...state, ...data });
+  };
 
   const getPanelData = ((panel: Panel) => state[panel]);
 
   const appContext: AppContextProps = {
     updatePanel,
     getPanelData,
+    updateState
   };
 
   const { loaded } = state;

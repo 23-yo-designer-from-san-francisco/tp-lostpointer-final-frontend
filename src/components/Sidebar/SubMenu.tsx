@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Star, StarFill } from 'react-bootstrap-icons';
 import styles from './SubMenu.module.css';
 import { ScheduleModel } from '../../Interfaces';
+import { AppContext } from '../../AppContext';
 
 const SidebarLink = styled(Link)`
   display: flex;
@@ -49,6 +50,8 @@ export interface SubMenuProps {
 }
 
 const SubMenu: React.FC<SubMenuProps> = ({ item, create }) => {
+  const { pathname } = useLocation();
+  const appContext = useContext(AppContext);
   // const [subnav, setSubnav] = useState(false);
   const [starred, setStarred] = useState(false);
 
@@ -59,21 +62,41 @@ const SubMenu: React.FC<SubMenuProps> = ({ item, create }) => {
     setStarred(!starred);
   };
 
-  const newClicked = () => {
-    alert('  Н О В И Н К А А!!! N    E W )))');
+  const sidebarLinkClicked = () => {
+    const path = pathname.split('/');
+    if (path.length === 3) {
+      if (path[1] === 'day') {
+        appContext.updateState({ currentDayScheduleId: parseInt(path[2]) });
+      } else if (path[1] === 'lesson' ) {
+        appContext.updateState({ currentLessonScheduleId: parseInt(path[2]) });
+      }
+    }
   };
+
+  useEffect(() => {
+    const path = pathname.split('/');
+    if (path.length === 3) {
+      if (path[1] === 'day') {
+        appContext.updateState({ currentDayScheduleId: parseInt(path[2]) });
+      } else if (path[1] === 'lesson' ) {
+        appContext.updateState({ currentLessonScheduleId: parseInt(path[2]) });
+      }
+    }
+  }, [pathname]);
+
+  const newClicked = () => null;
 
   return (create ?
     <SidebarLink onClick={newClicked} to={'#'}
     >
       <div className={styles.line}>
         {/*{item.icon}*/}
-        <SidebarLabel>N       E       W !!!!!</SidebarLabel>
+        <SidebarLabel>Создать</SidebarLabel>
       </div>
     </SidebarLink>
     :
     <>
-      <SidebarLink to={`/${location.pathname.split('/')[1]}/${item?.id}`}
+      <SidebarLink onClick={sidebarLinkClicked} to={`/${location.pathname.split('/')[1]}/${item?.id}`}
         // onClick={item.subNav && showSubnav}
       >
         <div className={styles.line}>

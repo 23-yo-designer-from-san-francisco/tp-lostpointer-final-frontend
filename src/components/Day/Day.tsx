@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useContext } from 'react';
 import { CardList } from '../CardList/CardList';
 import { DAY_CARD_LIST, DEFAULT_SCHEDULE_ID, Panel } from '../../pages';
 import { CardModel } from '../../Interfaces';
 import { useParams } from 'react-router-dom';
 
 import styles from './Day.module.css';
+import { AppContext } from '../../AppContext';
 
 export interface DayProps {
     id: Panel;
@@ -12,15 +13,12 @@ export interface DayProps {
 }
 
 const Day: React.FC<DayProps> = ({ id, cards= [] }) => {
+  const appContext = useContext(AppContext);
   const { scheduleId } = useParams();
   let parsedScheduleId = parseInt(String(scheduleId));
   if (!parsedScheduleId) {
     parsedScheduleId = DEFAULT_SCHEDULE_ID;
   }
-
-  useEffect(() => {
-    // Вот сюда кажется надо вставить получение даных
-  }, []);
 
   return(<>
     <div className={styles.dayTitle}>Расписание на день</div>
